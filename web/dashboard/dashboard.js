@@ -1,4 +1,4 @@
-const { api, live, esc, ago, clock, dist, duration, ALERT, STATUS, via, toast, beep } = Suraksha;
+const { api, live, esc, ago, clock, dist, duration, ALERT, STATUS, via, toast, beep, isPhone } = Suraksha;
 
 const UNITS = ["PCR Van 12", "PCR Van 04", "Tourist Police Unit 2", "108 Ambulance, Shillong", "SDRF Team, Umiam"];
 const store = {
@@ -37,6 +37,21 @@ L.control.layers(null, {
   "Tourists": layers.tourists, "Open alerts": layers.alerts,
 }, { position: "topright" }).addTo(map);
 const markers = { tourists: new Map(), alerts: new Map() };
+
+// ------------------------------------------------------------------ phone pane switcher (List / Map / Case)
+let pendingView = null; // where the map should look once it is visible again
+function setMview(v) {
+  document.getElementById("cols").dataset.mview = v;
+  document.querySelectorAll("#mview button").forEach((b) => b.classList.toggle("active", b.dataset.v === v));
+  if (v === "map") setTimeout(() => { map.invalidateSize(); if (pendingView) { map.setView(pendingView, Math.max(map.getZoom(), 15)); pendingView = null; } }, 30);
+}
+document.querySelectorAll("#mview button").forEach((b) => b.addEventListener("click", () => setMview(b.dataset.v)));
+// Map moves: fly on desktop; on a phone the map may be hidden, so remember the spot for later.
+function focusMap(latlng) {
+  if (isPhone() && document.getElementById("cols").dataset.mview !== "map") { pendingView = latlng; return; }
+  map.flyTo(latlng, Math.max(map.getZoom(), 15), { duration: 0.7 });
+}
+window.showOnMap = (lat, lon) => { pendingView = [lat, lon]; setMview("map"); };
 
 const squareIcon = (color, label) => L.divIcon({ className: "", iconSize: [20, 20], html: `<div class="pin" style="width:20px;height:20px;border-radius:5px;background:${color}">${label}</div>` });
 
@@ -119,6 +134,7 @@ function renderList() {
   const alerts = [...state.alerts.values()];
   const open = alerts.filter((a) => a.status !== "resolved").length;
   document.getElementById("openCount").textContent = open ? `(${open})` : "";
+  document.getElementById("pipOpen").textContent = open || "";
 
   if (state.tab === "alerts") {
     const shown = alerts
@@ -187,9 +203,10 @@ function emptyDetail() {
     </div></div>`;
 }
 
-function select(kind, id) {
+function select(kind, id, jump = true) {
   state.selected = { kind, id };
   state.fresh.delete(id);
+  if (jump && isPhone()) setMview("case"); // new alerts arriving on their own do not pull the officer away
   renderList();
   renderDetail(true);
 }
@@ -236,6 +253,7 @@ async function renderDetail(focus = false) {
         <div class="tags"><span class="badge b-${a.type}">${meta.label}</span><span class="badge b-${a.status}">${STATUS[a.status]}</span><span class="mono muted" style="margin-left:auto">Case #${String(a.id).padStart(4, "0")}</span></div>
         <h2>${esc(t?.name || a.band_id || "Unknown band")}</h2>
         <p>${esc(a.message || meta.text)} · ${via(a)}</p>
+        ${a.lat != null ? `<div class="case-actions mobile-only"><button class="btn-sm" onclick="showOnMap(${a.lat},${a.lon})"><span class="ms">map</span>Show on map</button></div>` : ""}
       </div>
       <div class="sec"><span class="label">Response</span>
         ${a.status === "resolved" ? `<div class="box">Closed${a.assigned_to ? ` by ${esc(a.assigned_to)}` : ""}.${a.notes ? `<br><span class="muted">${esc(a.notes)}</span>` : ""}</div>` : `
@@ -271,7 +289,7 @@ async function renderDetail(focus = false) {
       drawRoute(a);
       const p = a.nearest_police?.[0];
       if (p) L.polyline([[p.lat, p.lon], [a.lat, a.lon]], { color: "#2B6CB0", weight: 2, dashArray: "3 6" }).addTo(layers.focus);
-      if (focus) map.flyTo([a.lat, a.lon], Math.max(map.getZoom(), 15), { duration: 0.7 });
+      if (focus) focusMap([a.lat, a.lon]);
     }
   } else {
     const t = state.tourists.get(sel.id);
@@ -282,6 +300,7 @@ async function renderDetail(focus = false) {
         <div class="tags"><span class="badge b-${t.status}">${STATUS[t.status]}</span><span class="mono muted" style="margin-left:auto">${esc(t.band_id || "No band")}</span></div>
         <h2>${esc(t.name)}</h2>
         <p>Last seen ${ago(t.last_seen)} · battery ${t.battery ?? "–"}%</p>
+        ${t.last_lat != null ? `<div class="case-actions mobile-only"><button class="btn-sm" onclick="showOnMap(${t.last_lat},${t.last_lon})"><span class="ms">map</span>Show on map</button></div>` : ""}
       </div>
       <div class="sec"><div class="btn-row" style="margin-top:0">
         ${t.phone ? `<a class="btn" href="tel:${esc(t.phone)}"><span class="ms">call</span>Call tourist</a>` : ""}
@@ -292,7 +311,7 @@ async function renderDetail(focus = false) {
       <div class="sec"><span class="label">Route today</span><span class="muted small">Shown on the map as a green line.</span></div>`;
     const track = await api(`/api/tourists/${t.id}/track`);
     if (track.length > 1) L.polyline(track.map((p) => [p.lat, p.lon]), { color: "#1E5B3F", weight: 3, opacity: 0.8 }).addTo(layers.focus);
-    if (focus && t.last_lat != null) map.flyTo([t.last_lat, t.last_lon], Math.max(map.getZoom(), 15), { duration: 0.7 });
+    if (focus && t.last_lat != null) focusMap([t.last_lat, t.last_lon]);
   }
 }
 
@@ -364,9 +383,10 @@ modalBody.addEventListener("click", async (e) => {
 function setZoneMode(on) {
   state.zoneMode = on;
   document.getElementById("zoneHint").classList.toggle("hidden", !on);
+  document.querySelector("#zoneHint").childNodes[1].textContent = isPhone() ? " Tap the map where the risk zone should be. " : " Click on the map where the risk zone should be. ";
   document.getElementById("map").style.cursor = on ? "crosshair" : "";
 }
-document.getElementById("btnZone").onclick = () => setZoneMode(true);
+document.getElementById("btnZone").onclick = () => { if (isPhone()) setMview("map"); setZoneMode(true); };
 document.getElementById("zoneCancel").onclick = () => setZoneMode(false);
 map.on("click", (e) => {
   if (!state.zoneMode) return;
@@ -402,7 +422,7 @@ function onEvent(ev, d) {
     const meta = ALERT[d.type] || ALERT.SOS;
     beep(d.type === "SOS" || d.type === "FALL" ? 4 : 2);
     toast(`<b>${meta.label}: ${esc(d.tourist?.name || d.band_id)}</b><br><span class="muted">${esc(d.message || meta.text)}, ${via(d)}</span>`, "danger", 8000);
-    if (!state.selected || state.alerts.get(state.selected.id)?.status === "resolved") select("alert", d.id);
+    if (!state.selected || state.alerts.get(state.selected.id)?.status === "resolved") select("alert", d.id, false);
     if (state.tab === "alerts" && state.filter === "resolved") document.querySelector('[data-f="active"]').click();
   } else if (ev === "alert_update") {
     upsertAlert(d);

@@ -17,7 +17,7 @@
     header nav { display: flex; gap: 22px; font: 500 15px var(--head); }
     header nav a { color: var(--text-2); text-decoration: none; }
     header nav a:hover { color: var(--primary); }
-    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding: 64px 0 56px; }
+    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding-top: 64px; padding-bottom: 56px; }
     .hero h1 { font-size: clamp(32px, 4.4vw, 46px); line-height: 1.12; letter-spacing: -.02em; color: var(--primary-ink); }
     .hero p { font-size: 18px; color: var(--text-2); margin: 18px 0 26px; max-width: 540px; }
     .hero .ctas { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -50,12 +50,17 @@
     footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px; }
     footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     @media (max-width: 860px) {
-      .hero { grid-template-columns: 1fr; padding: 36px 0; gap: 28px; }
+      .hero { grid-template-columns: 1fr; padding-top: 32px; padding-bottom: 32px; gap: 28px; }
+      .hero p { font-size: 17px; }
+      .hero .ctas .btn { flex: 1; }
+      section.block { padding: 40px 0; }
+      section.block h2 { font-size: 24px; }
+      header.top .brand { font-size: 18px; }
       .band-art { max-width: 420px; }
       .steps4, .try { grid-template-columns: 1fr 1fr; }
       header nav { display: none; }
     }
-    @media (max-width: 520px) { .steps4, .try { grid-template-columns: 1fr; } }
+    @media (max-width: 520px) { .steps4, .try { grid-template-columns: 1fr; } .hero .ctas { flex-direction: column; } }
   </style>
 </head>
 <body>

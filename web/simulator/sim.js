@@ -1,6 +1,6 @@
 // Browser simulation of the band LoRa mesh: managed flooding with TTL and duplicate suppression.
 // A gateway that hears a packet uploads it to /api/gateway/ingest, the same endpoint the ESP32 gateway uses.
-const { api, esc, clock, haversine, toast } = Suraksha;
+const { api, esc, clock, haversine, toast, isPhone } = Suraksha;
 
 const FALLS = [25.5400, 91.8230];
 const LOST_BAND = "BAND-1004";
@@ -20,6 +20,16 @@ Suraksha.tiles(map);
 const fx = L.layerGroup().addTo(map);
 const rangeLayer = L.layerGroup().addTo(map);
 
+// Phone pane switcher (Steps / Map / Log). Unread log events show as a count on the Log tab.
+let unread = 0;
+function setMview(v) {
+  document.getElementById("cols").dataset.mview = v;
+  document.querySelectorAll("#mview button").forEach((b) => b.classList.toggle("active", b.dataset.v === v));
+  if (v === "log") { unread = 0; document.getElementById("pipLog").textContent = ""; }
+  if (v === "map") setTimeout(() => map.invalidateSize(), 30);
+}
+document.querySelectorAll("#mview button").forEach((b) => b.addEventListener("click", () => setMview(b.dataset.v)));
+
 const layoutGet = () => { try { return JSON.parse(localStorage.getItem("sim.layout.v2")) || null; } catch { return null; } };
 const layoutSave = () => {
   try {
@@ -38,6 +48,7 @@ function log(title, detail = "", cls = "") {
   const box = document.getElementById("log");
   box.prepend(el);
   while (box.children.length > 200) box.lastChild.remove();
+  if (isPhone() && document.getElementById("cols").dataset.mview !== "log") document.getElementById("pipLog").textContent = ++unread;
 }
 function drawCounters() {
   document.getElementById("counters").innerHTML = [
@@ -214,7 +225,8 @@ const steps = {
     n.lat = FALLS[0]; n.lon = FALLS[1];
     n.marker.setLatLng(FALLS);
     layoutSave();
-    map.flyTo([25.5580, 91.8540], 14);
+    // Phones have a narrow map, so centre on the tourist; desktops show the whole route to the gateway.
+    setTimeout(() => map.flyTo(isPhone() ? FALLS : [25.5580, 91.8540], isPhone() ? 13 : 14), 60);
     log(`${esc(n.tourist)} is at Elephant Falls`, `About ${(haversine(FALLS, [25.5770, 91.8855]) / 1000).toFixed(1)} km from the nearest gateway, with no mobile network.`, "warn");
     setTimeout(() => originate(n, "HEARTBEAT"), 400);
   },
@@ -237,10 +249,14 @@ const steps = {
   },
 };
 document.querySelectorAll("#steps [data-step]").forEach((b) => b.addEventListener("click", () => {
+  if (isPhone()) setMview("map"); // watch the message travel
   if (steps[b.dataset.step]() !== false) markStep(b.dataset.step);
 }));
 
-document.getElementById("hbAll").onclick = () => nodes.filter((n) => n.kind === "band" && n.alive).forEach((n, i) => setTimeout(() => originate(n, "HEARTBEAT"), i * 250));
+document.getElementById("hbAll").onclick = () => {
+  if (isPhone()) setMview("map");
+  nodes.filter((n) => n.kind === "band" && n.alive).forEach((n, i) => setTimeout(() => originate(n, "HEARTBEAT"), i * 250));
+};
 let hbTimer;
 document.getElementById("autoHb").onchange = (e) => {
   clearInterval(hbTimer);
@@ -248,7 +264,7 @@ document.getElementById("autoHb").onchange = (e) => {
 };
 
 const hint = document.getElementById("hint");
-document.getElementById("addRelay").onclick = () => { addMode = true; hint.classList.remove("hidden"); };
+document.getElementById("addRelay").onclick = () => { addMode = true; hint.classList.remove("hidden"); if (isPhone()) setMview("map"); };
 document.getElementById("hintCancel").onclick = () => { addMode = false; hint.classList.add("hidden"); };
 map.on("click", (e) => {
   if (!addMode) return;

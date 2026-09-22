@@ -89,5 +89,12 @@ const Suraksha = (() => {
     }).addTo(map);
   }
 
-  return { api, live, esc, ago, clock, dist, duration, haversine, ALERT, STATUS, via, toast, beep, tiles };
+  const isPhone = () => window.matchMedia("(max-width: 900px)").matches;
+  // Tap the legend title to open or fold the legend (folding only applies on phones).
+  document.addEventListener("click", (e) => {
+    const title = e.target.closest(".legend-title");
+    if (title) title.parentElement.classList.toggle("open");
+  });
+
+  return { api, live, esc, ago, clock, dist, duration, haversine, ALERT, STATUS, via, toast, beep, tiles, isPhone };
 })();

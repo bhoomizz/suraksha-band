@@ -12,14 +12,14 @@
   <link rel="stylesheet" href="../shared/theme.css">
   <link rel="stylesheet" href="sim.css">
 </head>
-<body class="shell">
+<body class="shell sim-shell">
   <header class="appbar">
     <a class="brand" href="/"><img src="../shared/logo.svg" alt="">Suraksha</a>
     <span class="vsep"></span>
     <div class="place"><b>Mesh simulator</b><span>How an SOS reaches the police with no mobile network</span></div>
     <div class="grow"></div>
-    <button id="resetDemo" class="btn-ghost" title="Clear all alerts and mark everyone safe"><span class="ms">restart_alt</span>Reset demo</button>
-    <a class="btn" href="/dashboard/" target="_blank"><span class="ms">open_in_new</span>Open control room</a>
+    <button id="resetDemo" class="btn-ghost" title="Clear all alerts and mark everyone safe" aria-label="Reset demo"><span class="ms">restart_alt</span><span class="lbl">Reset demo</span></button>
+    <a class="btn" href="/dashboard/" target="_blank" aria-label="Open control room"><span class="ms">open_in_new</span><span class="lbl">Open control room</span></a>
   </header>
 
   <nav class="rail">
@@ -31,7 +31,12 @@
     <a href="/tourist/" target="_blank"><span class="ms">smartphone</span>Tourist app</a>
   </nav>
 
-  <main class="shell-main sim">
+  <div class="mview sim-mview" id="mview">
+    <button data-v="steps" class="active"><span class="ms">checklist</span>Steps</button>
+    <button data-v="map"><span class="ms">map</span>Map</button>
+    <button data-v="log"><span class="ms">receipt_long</span>Log<span class="pip" id="pipLog"></span></button>
+  </div>
+  <main class="shell-main sim" id="cols" data-mview="steps">
     <aside class="panel">
       <section>
         <span class="label">Demo steps</span>

@@ -1,5 +1,5 @@
 .reports { overflow-y: auto; }
-.page { max-width: 1200px; margin: 0 auto; padding: 22px 24px 40px; display: grid; gap: 16px; }
+.page { max-width: 1200px; margin: 0 auto; padding: 22px 24px 40px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .page-head h1 { font-size: 26px; color: var(--primary-ink); }
 .page-head p { margin: 2px 0 0; }
@@ -52,9 +52,19 @@
 .tip { position: fixed; z-index: 3000; pointer-events: none; background: var(--text); color: #fff; font-size: 13px; padding: 6px 9px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); }
 
 @media (max-width: 900px) {
-  .tiles { grid-template-columns: 1fr 1fr; }
-  .grid2 { grid-template-columns: 1fr; }
-  .page { padding: 16px; }
+  .tiles { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tile { padding: 12px; }
+  .tile .v { font-size: 24px; }
+  .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .page { padding: 16px 12px 24px; gap: 12px; }
+  .page-head h1 { font-size: 22px; }
+  .page-head .seg { width: 100%; }
+  .page-head .seg-btn { flex: 1; padding: 6px 4px; }
+  .chart-card { min-height: 0; }
+  .hbar { grid-template-columns: 84px 1fr 28px; }
+  .cols-plot { margin-left: 28px; }
+  .cols-x { margin-left: 28px; }
+  .data { font-size: 13px; min-width: 720px; }
 }
 @media print {
   .shell { display: block; height: auto; overflow: visible; }

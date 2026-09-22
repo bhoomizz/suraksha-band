@@ -19,8 +19,8 @@
     <div class="place"><b>Control room</b><span>East Khasi Hills, Meghalaya</span></div>
     <div class="grow"></div>
     <span class="live"><span id="liveDot" class="dot"></span><span id="liveText">Connecting</span></span>
-    <button id="btnAdvisory"><span class="ms">campaign</span>Send notice</button>
-    <button id="btnZone" class="btn-primary"><span class="ms">add_location_alt</span>Add risk zone</button>
+    <button id="btnAdvisory" aria-label="Send notice"><span class="ms">campaign</span><span class="lbl">Send notice</span></button>
+    <button id="btnZone" class="btn-primary" aria-label="Add risk zone"><span class="ms">add_location_alt</span><span class="lbl">Add risk zone</span></button>
     <button class="officer" id="officer" title="Change duty officer"><span class="avatar" id="officerInit">RL</span><span><b id="officerName">Insp. R. Lyngdoh</b><small>Duty officer</small></span></button>
   </header>
 
@@ -35,7 +35,12 @@
 
   <main class="shell-main dash">
     <div class="metrics" id="stats"></div>
-    <div class="cols">
+    <div class="mview" id="mview">
+      <button data-v="list" class="active"><span class="ms">list</span>List<span class="pip" id="pipOpen"></span></button>
+      <button data-v="map"><span class="ms">map</span>Map</button>
+      <button data-v="case"><span class="ms">folder_open</span>Case</button>
+    </div>
+    <div class="cols" id="cols" data-mview="list">
       <aside class="side">
         <div class="seg">
           <button class="seg-btn active" data-tab="alerts">Alerts</button>

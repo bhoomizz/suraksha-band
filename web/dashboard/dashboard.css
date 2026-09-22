@@ -91,7 +91,7 @@
 .medical { display: flex; gap: 8px; background: var(--danger-soft); color: var(--danger-ink); border-radius: var(--r-sm); padding: 9px 10px; font-size: 14px; margin-top: 10px; }
 .medical .ms { font-size: 19px; }
 .timeline { display: grid; gap: 0; font-size: 14px; }
-.tl { display: grid; grid-template-columns: 70px 14px 1fr; gap: 8px; position: relative; padding-bottom: 10px; }
+.tl { display: grid; grid-template-columns: 88px 14px 1fr; gap: 8px; position: relative; padding-bottom: 10px; }
 .tl:last-child { padding-bottom: 0; }
 .tl .t { font: 12px var(--mono); color: var(--muted); padding-top: 1px; }
 .tl .d { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); margin-top: 5px; position: relative; }
@@ -118,11 +118,33 @@
 .history button { justify-content: space-between; width: 100%; font-weight: 500; text-align: left; }
 
 @media (max-width: 1280px) { .cols { grid-template-columns: 290px 1fr 330px; } }
-@media (max-width: 1050px) {
+@media (max-width: 1050px) and (min-width: 901px) {
   .shell-main.dash { overflow-y: auto; }
   .cols { grid-template-columns: 1fr; }
   .side { max-height: 50vh; border-right: 0; }
   .map-wrap { height: 60vh; }
   .detail { border-left: 0; border-top: 1px solid var(--line); overflow: visible; }
-  .legend { grid-template-columns: auto auto auto; }
 }
+/* Phones: one pane at a time, picked with the List / Map / Case switcher */
+@media (max-width: 900px) {
+  .shell-main.dash { overflow: hidden; }
+  .metrics { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; padding: 8px 12px; font-size: 13px; scrollbar-width: none; }
+  .metrics::-webkit-scrollbar { display: none; }
+  .metrics > span { padding: 0 10px; }
+  .metrics .push { margin-left: 0; }
+  .cols { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .cols > .side, .cols > .map-wrap, .cols > .detail { display: none; border: 0; }
+  .cols[data-mview="list"] > .side { display: flex; }
+  .cols[data-mview="map"] > .map-wrap { display: block; }
+  .cols[data-mview="case"] > .detail { display: flex; }
+  .seg { margin: 10px 10px 0; }
+  .filters { padding: 8px 10px; }
+  .list { padding: 8px 10px 16px; }
+  .case-head { padding: 14px 14px 12px; }
+  .sec { padding: 12px 14px; }
+  .kv { grid-template-columns: 112px 1fr; }
+  .case-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .zone-hint { left: 10px; right: 10px; transform: none; font-size: 13px; flex-wrap: wrap; }
+  .empty { padding: 20px 16px; }
+}
+

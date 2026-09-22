@@ -156,11 +156,42 @@ label { display: block; font: 500 13px var(--head); color: var(--text-2); margin
 .rail .rail-gap { flex: 1; }
 .shell-main { grid-area: main; min-width: 0; min-height: 0; overflow: hidden; }
 
+/* Pane switcher used on phones by the control room and simulator */
+.mview { display: none; }
+
 @media (max-width: 900px) {
-  .shell { grid-template: "head" auto "main" 1fr "rail" 64px / 1fr; height: 100dvh; }
-  .appbar { flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
+  .shell { grid-template: "head" 56px "main" 1fr "rail" auto / 1fr; height: 100vh; height: 100dvh; }
+  .appbar { padding: 0 12px; gap: 8px; }
   .place, .vsep, .officer span:last-child { display: none; }
-  .rail { flex-direction: row; justify-content: space-around; border-right: 0; border-top: 1px solid var(--line); padding: 4px; }
+  .appbar .lbl { display: none; }
+  .appbar button, .appbar .btn { padding: 8px; }
+  .appbar button .ms, .appbar .btn .ms { font-size: 20px; }
+  .brand { font-size: 18px; }
+  .live { padding: 3px 8px; }
+  .rail { flex-direction: row; justify-content: space-around; border-right: 0; border-top: 1px solid var(--line); padding: 4px 4px calc(4px + env(safe-area-inset-bottom)); }
   .rail .rail-gap { display: none; }
-  .rail a { flex: 1; padding: 4px 0; }
+  .rail a { flex: 1; padding: 4px 0; font-size: 11px; }
+  .rail a .ms { padding: 3px 12px; }
+
+  .mview { display: flex; gap: 4px; padding: 6px 10px; background: var(--card); border-bottom: 1px solid var(--line); }
+  .mview button { flex: 1; border: 0; background: var(--surface); color: var(--text-2); padding: 7px 4px; font-size: 14px; position: relative; }
+  .mview button.active { background: var(--primary); color: #fff; }
+  .mview button .ms { font-size: 18px; }
+  .mview .pip { position: absolute; top: 4px; right: 8px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--danger); color: #fff; font: 700 11px/18px var(--head); padding: 0 5px; }
+  .mview .pip:empty { display: none; }
+  .modal { padding: 18px; }
+  .toast-wrap { top: 64px; right: 10px; left: 10px; }
+  .toast { max-width: none; }
+}
+@media (min-width: 901px) { .mobile-only { display: none !important; } }
+
+/* Map legends fold away on phones so they don't cover the map */
+.legend-title { cursor: default; }
+@media (max-width: 900px) {
+  .legend { left: 8px !important; bottom: 22px !important; padding: 7px 10px !important; font-size: 12px !important; gap: 4px 12px !important; }
+  .legend-title { cursor: pointer; border-bottom: 0 !important; padding-bottom: 0 !important; margin: 0 !important; display: flex; align-items: center; gap: 4px; }
+  .legend-title::after { content: "expand_more"; font-family: "Material Symbols Outlined"; font-size: 18px; font-feature-settings: "liga"; line-height: 1; }
+  .legend.open .legend-title::after { content: "expand_less"; }
+  .legend:not(.open) > span { display: none !important; }
+  .legend.open .legend-title { margin-bottom: 4px !important; }
 }

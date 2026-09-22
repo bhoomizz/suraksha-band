@@ -61,9 +61,21 @@ label b { float: right; font: 500 13px var(--mono); color: var(--primary-ink); }
 .ev.warn { border-left-color: var(--warn); background: var(--warn-soft); }
 .popup-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
 
-@media (max-width: 1100px) {
+@media (max-width: 1100px) and (min-width: 901px) {
   .shell-main.sim { overflow-y: auto; }
   .sim { grid-template-columns: 1fr; }
   .map-wrap { height: 65vh; }
   .logs { max-height: 50vh; }
+}
+/* Phones: one pane at a time, picked with the Steps / Map / Log switcher */
+@media (max-width: 900px) {
+  .shell.sim-shell { grid-template: "head" 56px "mview" auto "main" 1fr "rail" auto / 1fr; }
+  .sim-mview { grid-area: mview; }
+  .shell-main.sim { overflow: hidden; }
+  .sim { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .sim > .panel, .sim > .map-wrap, .sim > .logs { display: none; border: 0; }
+  .sim[data-mview="steps"] > .panel { display: flex; padding: 14px; }
+  .sim[data-mview="map"] > .map-wrap { display: block; }
+  .sim[data-mview="log"] > .logs { display: flex; }
+  .hint { left: 10px; right: 10px; transform: none; font-size: 13px; }
 }
