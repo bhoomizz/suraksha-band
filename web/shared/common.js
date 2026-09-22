@@ -82,13 +82,19 @@ const Suraksha = (() => {
     } catch (e) { /* audio blocked until user interacts */ }
   }
 
+  // Esri street map: every name is written in English (no Chinese, Bengali or other foreign scripts),
+  // and panning is limited to India.
   function tiles(map) {
-    return L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19, className: "map-tiles",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    const layer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 18, minZoom: 5, className: "map-tiles",
+      attribution: "Base map &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors",
     }).addTo(map);
+    map.setMaxBounds([[5, 66], [38.5, 99]]);
+    map.setMinZoom(5);
+    const Region = L.Control.extend({ onAdd() { const d = L.DomUtil.create("div", "map-region"); d.textContent = "East Khasi Hills · Meghalaya · India"; return d; } });
+    new Region({ position: "topleft" }).addTo(map);
+    return layer;
   }
-
   const isPhone = () => window.matchMedia("(max-width: 900px)").matches;
   // Tap the legend title to open or fold the legend (folding only applies on phones).
   document.addEventListener("click", (e) => {

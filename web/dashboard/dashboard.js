@@ -2,14 +2,14 @@ const { api, live, esc, ago, clock, dist, duration, ALERT, STATUS, via, toast, b
 
 const UNITS = ["PCR Van 12", "PCR Van 04", "Tourist Police Unit 2", "108 Ambulance, Shillong", "SDRF Team, Umiam"];
 const store = {
-  get(k, d) { try { return localStorage.getItem("control." + k) || d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem("control." + k, v); } catch { /* storage blocked */ } },
+  get(k, d) { try { return localStorage.getItem("control.v2." + k) || d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("control.v2." + k, v); } catch { /* storage blocked */ } },
 };
 
 const state = {
   alerts: new Map(), tourists: new Map(), geofences: [], places: [], gateways: new Map(),
   tab: location.hash === "#tourists" ? "tourists" : "alerts", filter: "active", selected: null, fresh: new Set(), zoneMode: false,
-  officer: store.get("officer", "Insp. R. Lyngdoh"),
+  officer: store.get("officer", "Insp. Rajesh Verma"),
 };
 
 // ------------------------------------------------------------------ duty officer

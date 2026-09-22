@@ -21,6 +21,8 @@ from . import db, geo, identity, seed
 WEB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "web"))
 INACTIVITY_MIN = float(os.environ.get("INACTIVITY_MIN", "15"))
 ACTIVE_WINDOW_S = 30 * 60
+# The seeded demo gateways have no hardware behind them, so keep them marked online. Set to 0 with real gateways.
+DEMO_GATEWAYS = os.environ.get("DEMO_GATEWAYS", "1") != "0"
 ALERT_TYPES = {"SOS", "FALL", "HEALTH", "GEOFENCE", "INACTIVITY"}
 
 
@@ -229,6 +231,9 @@ async def inactivity_watch():
     """Raise an INACTIVITY alert when a tourist inside a risk zone goes silent."""
     while True:
         await asyncio.sleep(20)
+        if DEMO_GATEWAYS:  # stands in for the heartbeat a real gateway sends every minute
+            db.execute(f"UPDATE gateways SET last_seen = ? WHERE id IN ({','.join('?' * len(seed.GATEWAYS))})",
+                       (db.now(), *[g[0] for g in seed.GATEWAYS]))
         cutoff = db.now() - INACTIVITY_MIN * 60
         fences = db.query("SELECT * FROM geofences")
         for t in db.query("SELECT * FROM tourists WHERE status = 'safe' AND last_seen < ?", (cutoff,)):

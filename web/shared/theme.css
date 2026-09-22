@@ -122,7 +122,16 @@ label { display: block; font: 500 13px var(--head); color: var(--text-2); margin
 
 /* Leaflet */
 .leaflet-container { background: #EFEDE6; font-family: var(--body); }
-.map-tiles { filter: saturate(.75) sepia(.08); } /* softens OSM colours to sit with the warm palette */
+.map-tiles { filter: saturate(.8) sepia(.1); } /* softens the street map to sit with the warm palette */
+.map-label { pointer-events: none; }
+.map-label span { display: block; transform: translate(-50%, -50%); white-space: nowrap; font: 600 12px var(--head); color: #4A4F49; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff; }
+.map-label.city span { font: 700 16px var(--head); color: var(--text); letter-spacing: .02em; }
+.map-label.spot span { color: var(--primary-ink); }
+.map-label.road span { font: italic 500 11px var(--body); color: var(--muted); }
+.labels-far .map-label:not(.city) span { display: none; }
+.labels-far .map-label.spot span { display: block; font-size: 11px; }
+.map-region { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 4px 9px; font: 600 12px var(--head); color: var(--text-2); box-shadow: 0 1px 4px rgba(0, 0, 0, .08); }
+@media (max-width: 900px) { .map-region { font-size: 11px; padding: 3px 7px; } }
 .leaflet-popup-content-wrapper { border-radius: var(--r); box-shadow: 0 6px 20px rgba(0, 0, 0, .15); }
 .leaflet-popup-content { margin: 12px 14px; font-size: 14px; line-height: 1.4; }
 .leaflet-bar a { color: var(--text) !important; }

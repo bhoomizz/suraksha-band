@@ -1,5 +1,5 @@
 // Offline support: the app shell is served from cache, and GET API calls fall back to their last cached response.
-const CACHE = "suraksha-v3";
+const CACHE = "suraksha-v4";
 const SHELL = [
   "./", "index.html", "app.css", "app.js", "i18n.js", "manifest.json", "icon.svg",
   "../shared/theme.css", "../shared/common.js", "../shared/logo.svg",
@@ -37,7 +37,7 @@ self.addEventListener("fetch", (e) => {
     return;
   }
   // Map tiles the tourist has already seen, so the map still works with no signal.
-  if (url.hostname === "tile.openstreetmap.org") { e.respondWith(cacheFirst(req, CACHE + "-tiles")); return; }
+  if (url.hostname === "server.arcgisonline.com") { e.respondWith(cacheFirst(req, CACHE + "-tiles")); return; }
   // Fonts and icon font, so the interface still reads correctly offline.
   if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") { e.respondWith(cacheFirst(req, CACHE + "-fonts")); return; }
 
