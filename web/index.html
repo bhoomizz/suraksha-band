@@ -4,51 +4,146 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Suraksha Band</title>
-  <link rel="icon" href="tourist/icon.svg" type="image/svg+xml">
+  <meta name="description" content="A safety band for tourists that works without mobile network.">
+  <link rel="icon" href="shared/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block">
   <link rel="stylesheet" href="shared/theme.css">
   <style>
-    body { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; }
-    .wrap { max-width: 980px; width: 100%; }
-    .hero { text-align: center; margin-bottom: 36px; }
-    .hero img { width: 72px; height: 72px; }
-    .hero h1 { font-size: clamp(28px, 5vw, 44px); margin: 14px 0 8px; letter-spacing: -.02em; }
-    .hero p { color: var(--muted); font-size: 16px; max-width: 640px; margin: 0 auto; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 8px; transition: border-color .15s, transform .15s; }
-    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .card h2 { font-size: 18px; }
-    .card p { margin: 0; color: var(--muted); font-size: 14px; }
-    .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
-    .flow { margin-top: 28px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
-    .flow h3 { font-size: 14px; margin-bottom: 10px; }
-    .steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; }
-    .steps span { background: var(--panel-2); border: 1px solid var(--line); padding: 6px 10px; border-radius: 8px; }
-    .steps b { color: var(--muted); }
-    .links { margin-top: 18px; text-align: center; font-size: 13px; color: var(--muted); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+    header.top { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: 0; z-index: 10; }
+    header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+    header nav { display: flex; gap: 22px; font: 500 15px var(--head); }
+    header nav a { color: var(--text-2); text-decoration: none; }
+    header nav a:hover { color: var(--primary); }
+    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding: 64px 0 56px; }
+    .hero h1 { font-size: clamp(32px, 4.4vw, 46px); line-height: 1.12; letter-spacing: -.02em; color: var(--primary-ink); }
+    .hero p { font-size: 18px; color: var(--text-2); margin: 18px 0 26px; max-width: 540px; }
+    .hero .ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero .ctas .btn { padding: 12px 18px; font-size: 15px; }
+    .band-art { background: var(--surface-low); border: 1px solid var(--line); border-radius: 12px; aspect-ratio: 1 / 1; display: grid; place-items: center; }
+    .band-art svg { width: 78%; height: auto; }
+    section.block { padding: 56px 0; border-top: 1px solid var(--line); }
+    section.block h2 { font-size: 28px; margin-bottom: 8px; }
+    section.block > .wrap > p.lead { color: var(--text-2); font-size: 17px; margin: 0 0 28px; max-width: 640px; }
+    .steps4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .steps4 .card { position: relative; }
+    .steps4 .n { font: 700 13px var(--head); color: var(--primary); }
+    .steps4 .ms { font-size: 28px; color: var(--primary); display: block; margin: 10px 0 8px; max-width: none; }
+    .steps4 h3 { font-size: 17px; margin-bottom: 4px; }
+    .steps4 p { margin: 0; color: var(--text-2); font-size: 15px; }
+    .aside-note { margin-top: 16px; font-size: 15px; color: var(--text-2); display: flex; gap: 8px; align-items: center; }
+    .aside-note .ms { color: var(--primary); }
+    .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .part { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; }
+    .part .ms { font-size: 24px; color: var(--primary); background: var(--primary-soft); border-radius: 8px; padding: 8px; max-width: none; }
+    .part b { font: 600 15px var(--head); display: block; }
+    .part span { font-size: 14px; color: var(--text-2); }
+    .try { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .try a { text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 6px; transition: border-color .12s; }
+    .try a:hover { border-color: var(--primary); }
+    .try .ms { font-size: 26px; color: var(--primary); max-width: none; }
+    .try h3 { font-size: 18px; }
+    .try p { margin: 0; color: var(--text-2); font-size: 15px; }
+    .try .go { margin-top: auto; padding-top: 8px; font: 600 14px var(--head); color: var(--primary); display: flex; align-items: center; gap: 4px; }
+    footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; padding: 36px 0; gap: 28px; }
+      .band-art { max-width: 420px; }
+      .steps4, .try { grid-template-columns: 1fr 1fr; }
+      header nav { display: none; }
+    }
+    @media (max-width: 520px) { .steps4, .try { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <img src="tourist/icon.svg" alt="">
-      <h1>Suraksha Band</h1>
-      <p>A smart safety band for tourists. It has an SOS button, works without internet over a LoRa mesh between bands, and alerts the police control room in real time.</p>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="/"><img src="shared/logo.svg" alt="">Suraksha</a>
+      <nav><a href="#how">How it works</a><a href="#hardware">Hardware</a><a href="#try">Try it</a><a href="https://github.com/bhoomizz/suraksha-band">GitHub</a></nav>
+      <a class="btn btn-primary" href="dashboard/">Control room</a>
     </div>
-    <div class="grid">
-      <a class="card" href="dashboard/"><span class="tag">Authorities</span><h2>Control Room Dashboard</h2><p>Live map of tourists and SOS alerts, mesh path, nearest police and hospital, dispatch and resolve, risk zones and advisories.</p></a>
-      <a class="card" href="tourist/"><span class="tag">Tourists</span><h2>Tourist App</h2><p>Mobile PWA with a digital ID, SOS hold button, offline queue with SMS fallback, geofence warnings, fall detection and Bluetooth band pairing.</p></a>
-      <a class="card" href="simulator/"><span class="tag">Demo</span><h2>Mesh Simulator</h2><p>Simulates bands relaying an SOS hop by hop with no internet until it reaches a gateway. Use it to demo without hardware.</p></a>
-    </div>
-    <div class="flow">
-      <h3>How an SOS travels</h3>
-      <div class="steps">
-        <span>Band SOS button</span><b>→</b><span>LoRa mesh (band to band)</span><b>→</b><span>Gateway (GSM / Wi-Fi)</span><b>→</b><span>Server</span><b>→</b><span>Control room + tourist app</span>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <div>
+        <h1>A safety band for tourists that works without mobile network</h1>
+        <p>Press and hold the button on the band. The alert travels from band to band until it reaches a gateway with internet, then shows up on the police control room screen with your location and medical details.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="dashboard/"><span class="ms">map</span>Open control room</a>
+          <a class="btn" href="tourist/"><span class="ms">smartphone</span>Try the tourist app</a>
+        </div>
       </div>
-      <div class="steps" style="margin-top:8px">
-        <span>Band</span><b>→</b><span>Bluetooth</span><b>→</b><span>Phone app</span><b>→</b><span>Internet, or SMS when offline</span>
+      <div class="band-art" aria-label="Drawing of the Suraksha band">
+        <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="160" cy="292" rx="96" ry="10" fill="#E4E2DD"/>
+          <path d="M92 60 C60 100 58 220 92 262 L124 262 C100 220 100 100 124 60 Z" fill="#2A2B28"/>
+          <path d="M228 60 C260 100 262 220 228 262 L196 262 C220 220 220 100 196 60 Z" fill="#2A2B28"/>
+          <g stroke="#3A3B37" stroke-width="2">
+            <line x1="84" y1="110" x2="112" y2="110"/><line x1="80" y1="140" x2="108" y2="140"/><line x1="80" y1="180" x2="108" y2="180"/><line x1="84" y1="210" x2="112" y2="210"/>
+            <line x1="208" y1="110" x2="236" y2="110"/><line x1="212" y1="140" x2="240" y2="140"/><line x1="212" y1="180" x2="240" y2="180"/><line x1="208" y1="210" x2="236" y2="210"/>
+          </g>
+          <rect x="104" y="98" width="112" height="126" rx="26" fill="#1B1C19"/>
+          <rect x="112" y="106" width="96" height="110" rx="20" fill="#30312E"/>
+          <circle cx="160" cy="161" r="30" fill="#BA1A1A"/>
+          <circle cx="160" cy="161" r="30" fill="none" stroke="#93000A" stroke-width="3"/>
+          <text x="160" y="168" text-anchor="middle" font-family="Public Sans, Arial, sans-serif" font-weight="700" font-size="19" fill="#fff">SOS</text>
+          <circle cx="132" cy="122" r="3" fill="#2F7D4F"/>
+          <text x="160" y="206" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8C948D">BAND-1001</text>
+        </svg>
       </div>
     </div>
-    <p class="links"><a href="/docs">API docs (Swagger)</a> · <a href="/api/ledger/verify">Verify digital-ID ledger</a></p>
-  </div>
+
+    <section class="block" id="how">
+      <div class="wrap">
+        <h2>How it works</h2>
+        <p class="lead">Many trekking spots in the North East have no mobile network. The bands talk to each other directly over LoRa radio, so a message can hop across a hillside to wherever there is a connection.</p>
+        <div class="steps4">
+          <div class="card"><span class="n">1</span><span class="ms">touch_app</span><h3>Press SOS on the band</h3><p>Hold the button for 3 seconds. A fall or an unusual heart rate can also send it.</p></div>
+          <div class="card"><span class="n">2</span><span class="ms">hub</span><h3>Nearby bands pass it on</h3><p>Each band that hears the message repeats it once, up to 8 hops.</p></div>
+          <div class="card"><span class="n">3</span><span class="ms">router</span><h3>A gateway sends it in</h3><p>Gateways at police stations and hotels forward it over Wi-Fi or GSM.</p></div>
+          <div class="card"><span class="n">4</span><span class="ms">local_police</span><h3>Police assign a unit</h3><p>The control room sees the tourist on the map, with blood group and emergency contact.</p></div>
+        </div>
+        <p class="aside-note"><span class="ms">smartphone</span>If the tourist's phone has signal, the app sends the alert directly as well, or by SMS.</p>
+      </div>
+    </section>
+
+    <section class="block" id="hardware">
+      <div class="wrap">
+        <h2>What's in the band</h2>
+        <p class="lead">Built from parts that are easy to buy in India and assemble for a prototype.</p>
+        <div class="parts">
+          <div class="part"><span class="ms">memory</span><div><b>ESP32 board</b><span>Runs the band and talks to the phone over Bluetooth.</span></div></div>
+          <div class="part"><span class="ms">cell_tower</span><div><b>LoRa radio, 865–867 MHz</b><span>Long-range, low-power link between bands.</span></div></div>
+          <div class="part"><span class="ms">satellite_alt</span><div><b>GPS module</b><span>Adds the location to every alert.</span></div></div>
+          <div class="part"><span class="ms">vibration</span><div><b>Motion sensor</b><span>Detects a hard fall followed by no movement.</span></div></div>
+          <div class="part"><span class="ms">ecg_heart</span><div><b>Heart-rate sensor</b><span>Optional. Flags very high or very low readings.</span></div></div>
+          <div class="part"><span class="ms">battery_charging_full</span><div><b>Battery and charger</b><span>Li-Po cell with a USB charging board.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="try">
+      <div class="wrap">
+        <h2>Try it</h2>
+        <p class="lead">The demo is set around Shillong. Open the control room and the simulator side by side, then run the four demo steps.</p>
+        <div class="try">
+          <a class="card" href="dashboard/"><span class="ms">map</span><h3>Control room</h3><p>Live map, alert queue and case file for police and tourism officers.</p><span class="go">Open<span class="ms" style="font-size:18px">arrow_forward</span></span></a>
+          <a class="card" href="tourist/"><span class="ms">smartphone</span><h3>Tourist app</h3><p>Register a trip, hold SOS, and see help on its way. Works offline.</p><span class="go">Open<span class="ms" style="font-size:18px">arrow_forward</span></span></a>
+          <a class="card" href="simulator/"><span class="ms">hub</span><h3>Mesh simulator</h3><p>Watch an SOS hop between bands with no mobile network.</p><span class="go">Open<span class="ms" style="font-size:18px">arrow_forward</span></span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Built for Smart India Hackathon 2026</span>
+      <span><a href="https://github.com/bhoomizz/suraksha-band">GitHub</a> · <a href="/docs">API docs</a> · <a href="reports/">Reports</a></span>
+    </div>
+  </footer>
 </body>
 </html>

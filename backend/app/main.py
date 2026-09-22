@@ -55,6 +55,7 @@ class TouristIn(BaseModel):
     name: str = Field(min_length=1)
     phone: Optional[str] = None
     nationality: Optional[str] = None
+    home_state: Optional[str] = None
     id_doc: Optional[str] = None
     blood_group: Optional[str] = None
     medical_notes: Optional[str] = None
@@ -179,11 +180,11 @@ async def record_location(tourist, lat, lon, source, battery=None):
             continue
         open_gf = db.one(
             "SELECT id FROM alerts WHERE tourist_id = ? AND type = 'GEOFENCE' AND status != 'resolved' AND message = ?",
-            (tid, f"Entered: {f['name']}"),
+            (tid, f"Entered {f['name']} area"),
         )
         if not open_gf:
             await create_alert(tourist, type="GEOFENCE", lat=lat, lon=lon, source=source,
-                               message=f"Entered: {f['name']}")
+                               message=f"Entered {f['name']} area")
     await hub.emit("tourist_update", get_tourist(tid))
     return inside
 
@@ -215,7 +216,7 @@ async def process_packet(p: PacketIn, source: str, gateway_id=None):
             lat, lon = tourist["last_lat"], tourist["last_lon"]
         msg = p.message
         if ptype == "HEALTH" and p.heart_rate:
-            msg = msg or f"Abnormal heart rate: {p.heart_rate} bpm"
+            msg = msg or f"Heart rate {p.heart_rate} bpm"
         alert, created = await create_alert(
             tourist, type=ptype, lat=lat, lon=lon, source=source, msg_id=p.msg_id,
             band_id=p.band_id, gateway_id=gateway_id, hops=p.hops, battery=p.battery, message=msg,
@@ -242,7 +243,7 @@ async def inactivity_watch():
                 continue
             mins = int((db.now() - t["last_seen"]) / 60)
             await create_alert(t, type="INACTIVITY", lat=t["last_lat"], lon=t["last_lon"], source="system",
-                               message=f"No signal for {mins} min inside {zones[0]['name']}")
+                               message=f"No signal for {mins} min near {zones[0]['name']}")
 
 
 # ---------------------------------------------------------------- app

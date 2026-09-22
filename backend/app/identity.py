@@ -41,5 +41,5 @@ def verify_chain():
 def mask_doc(doc):
     if not doc:
         return doc
-    doc = str(doc)
-    return "X" * max(0, len(doc) - 4) + doc[-4:]
+    digits = "".join(ch for ch in str(doc) if ch.isalnum())
+    return "XXXX XXXX " + digits[-4:]

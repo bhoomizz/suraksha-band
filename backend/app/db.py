@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS tourists (
     name TEXT NOT NULL,
     phone TEXT,
     nationality TEXT,
+    home_state TEXT,
     id_doc TEXT,
     blood_group TEXT,
     medical_notes TEXT,
@@ -95,6 +96,9 @@ JSON_FIELDS = {"hops", "itinerary"}
 def init():
     with _lock:
         _conn.executescript(SCHEMA)
+        cols = {r["name"] for r in _conn.execute("PRAGMA table_info(tourists)").fetchall()}
+        if "home_state" not in cols:  # databases created before this column existed
+            _conn.execute("ALTER TABLE tourists ADD COLUMN home_state TEXT")
         _conn.commit()
 
 

@@ -3,10 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1017">
-  <title>Suraksha Tourist</title>
+  <meta name="theme-color" content="#FBF9F4">
+  <title>Suraksha</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="../shared/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="stylesheet" href="../shared/theme.css">
   <link rel="stylesheet" href="app.css">
@@ -14,110 +18,195 @@
 <body>
   <div class="app">
     <header class="bar">
-      <div class="brand"><div class="logo">S</div><span data-i18n="app">Suraksha</span></div>
+      <div class="brand"><img src="../shared/logo.svg" alt=""><span>Suraksha</span></div>
       <div class="bar-right">
-        <span class="net" id="net"><span class="dot"></span><span id="netText"></span></span>
-        <button class="btn-sm btn-ghost" id="langBtn">हिं</button>
+        <span class="net" id="net"><span class="ms" id="netIcon">signal_cellular_alt</span><span id="netText"></span></span>
+        <span class="net hidden" id="barBattery"><span class="ms">watch</span><span id="barBatteryText"></span></span>
       </div>
     </header>
 
-    <!-- Registration -->
+    <!-- ============ Registration ============ -->
     <section id="viewRegister" class="view hidden">
-      <div class="card">
-        <h2 data-i18n="regTitle">Register your trip</h2>
-        <p class="muted" data-i18n="regSub">You get a digital tourist ID linked to your safety band. Police can only see this information during an emergency.</p>
-        <form id="regForm">
-          <label data-i18n="fName">Full name</label><input name="name" required autocomplete="name">
-          <div class="grid2">
-            <div><label data-i18n="fPhone">Phone</label><input name="phone" type="tel" autocomplete="tel"></div>
-            <div><label data-i18n="fNat">Nationality</label><input name="nationality" value="Indian"></div>
-          </div>
-          <label data-i18n="fDoc">Aadhaar / Passport no.</label><input name="id_doc" placeholder="Only the last 4 digits are stored">
-          <div class="grid2">
-            <div><label data-i18n="fBlood">Blood group</label>
-              <select name="blood_group"><option></option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
-            <div><label data-i18n="fBand">Band ID</label><input name="band_id" placeholder="BAND-1234"></div>
-          </div>
-          <label data-i18n="fMed">Medical notes</label><input name="medical_notes" placeholder="Allergies, conditions">
-          <div class="grid2">
-            <div><label data-i18n="fEName">Emergency contact</label><input name="emergency_name"></div>
-            <div><label data-i18n="fEPhone">Contact phone</label><input name="emergency_phone" type="tel"></div>
-          </div>
-          <div class="grid2">
-            <div><label data-i18n="fStart">Trip start</label><input name="trip_start" type="date"></div>
-            <div><label data-i18n="fEnd">Trip end</label><input name="trip_end" type="date"></div>
-          </div>
-          <label data-i18n="fItin">Places you plan to visit</label><input name="itinerary" placeholder="Elephant Falls, Umiam Lake">
-          <button class="btn-primary wide" type="submit" data-i18n="regBtn">Create my digital ID</button>
-        </form>
-        <details class="login">
-          <summary data-i18n="haveId">Already registered?</summary>
-          <div class="row"><input id="loginId" placeholder="TID-XXXXXX"><button id="loginBtn" data-i18n="open">Open</button></div>
-        </details>
+      <div class="reg-top">
+        <h1 data-i18n="regTitle">Register your trip</h1>
+        <div class="lang-seg" role="group" aria-label="Language">
+          <button type="button" data-lang="en">English</button><button type="button" data-lang="hi">हिन्दी</button>
+        </div>
       </div>
+      <div class="note"><span class="ms">lock</span><span data-i18n="regPrivacy">Police only see these details if you send an SOS.</span></div>
+
+      <ol class="stepper" id="stepInd">
+        <li class="on"><span>1</span><b data-i18n="s1">About you</b></li>
+        <li><span>2</span><b data-i18n="s2">In an emergency</b></li>
+        <li><span>3</span><b data-i18n="s3">Your trip</b></li>
+      </ol>
+
+      <form id="regForm" novalidate>
+        <div class="card step" data-step="1">
+          <label for="fName" data-i18n="fName">Full name</label>
+          <input id="fName" name="name" required autocomplete="name" placeholder="Aarav Sharma">
+          <label for="fPhone" data-i18n="fPhone">Phone number</label>
+          <div class="phone"><span>+91</span><input id="fPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="98110 24567"></div>
+          <label for="fState" data-i18n="fState">Home state</label>
+          <select id="fState" name="home_state"></select>
+          <label for="fNat" data-i18n="fNat">Nationality</label>
+          <select id="fNat" name="nationality"><option value="Indian" data-i18n="natIn">Indian</option><option value="Foreign national" data-i18n="natOut">Foreign national</option></select>
+          <label for="fDoc" data-i18n="fDoc">Aadhaar or passport number</label>
+          <input id="fDoc" name="id_doc" inputmode="text" autocomplete="off" placeholder="XXXX XXXX 4821">
+          <div class="hint" data-i18n="fDocHint">We only keep the last 4 digits.</div>
+        </div>
+
+        <div class="card step hidden" data-step="2">
+          <label data-i18n="fBlood">Blood group</label>
+          <div class="blood-pick" id="bloodPick"></div>
+          <input type="hidden" name="blood_group" id="fBlood">
+          <label for="fMed" data-i18n="fMed">Allergies or medical conditions</label>
+          <input id="fMed" name="medical_notes" data-i18n-ph="fMedPh" placeholder="For example: asthma, allergic to penicillin">
+          <label for="fEName" data-i18n="fEName">Emergency contact name</label>
+          <input id="fEName" name="emergency_name" placeholder="Neha Sharma (sister)">
+          <label for="fEPhone" data-i18n="fEPhone">Emergency contact phone</label>
+          <div class="phone"><span>+91</span><input id="fEPhone" name="emergency_phone" type="tel" inputmode="numeric" placeholder="98110 88213"></div>
+        </div>
+
+        <div class="card step hidden" data-step="3">
+          <div class="grid2">
+            <div><label for="fStart" data-i18n="fStart">From</label><input id="fStart" name="trip_start" type="date"></div>
+            <div><label for="fEnd" data-i18n="fEnd">To</label><input id="fEnd" name="trip_end" type="date"></div>
+          </div>
+          <label for="placeInput" data-i18n="fItin">Places you plan to visit</label>
+          <div class="chips" id="placeChips"></div>
+          <input id="placeInput" list="placeList" data-i18n-ph="fItinPh" placeholder="Type a place and press Enter">
+          <datalist id="placeList"></datalist>
+          <label for="fBand" data-i18n="fBand">Band number</label>
+          <div class="band-field">
+            <span class="ms">watch</span>
+            <input id="fBand" name="band_id" placeholder="BAND-1001" autocomplete="off">
+            <button type="button" class="btn-sm" id="scanBand"><span class="ms">bluetooth_searching</span><span data-i18n="scan">Scan band</span></button>
+          </div>
+          <div class="hint" data-i18n="fBandHint">It's printed on the inside of the band.</div>
+        </div>
+
+        <div class="reg-actions">
+          <button type="button" class="btn-ghost hidden" id="regBack"><span class="ms">arrow_back</span><span data-i18n="back">Back</span></button>
+          <button type="button" class="btn-primary" id="regNext"><span id="regNextText" data-i18n="continue">Continue</span><span class="ms">arrow_forward</span></button>
+        </div>
+      </form>
+
+      <details class="login">
+        <summary data-i18n="haveId">I already have a tourist ID</summary>
+        <div class="row"><input id="loginId" placeholder="TID-XXXXXX" autocomplete="off"><button id="loginBtn" class="btn-primary" data-i18n="open">Open</button></div>
+      </details>
     </section>
 
-    <!-- Home -->
-    <section id="viewHome" class="view hidden">
-      <div id="advisory" class="banner hidden"></div>
-      <div id="zoneBanner" class="banner warn hidden"></div>
+    <!-- ============ Main app ============ -->
+    <section id="viewApp" class="hidden">
+      <!-- Home -->
+      <div class="view tab" id="tab-home">
+        <div id="offlineBanner" class="notice warn hidden"><div class="notice-top"><b data-i18n="noSignal">No signal</b><span class="ms">signal_cellular_nodata</span></div><p data-i18n="offlineLine">Your band can still pass an SOS to nearby bands over radio.</p></div>
+        <div id="advisory" class="notice hidden"></div>
+        <div id="zoneBanner" class="notice danger hidden"></div>
 
-      <div class="hello">
-        <div><div class="muted small" data-i18n="hello">Stay safe,</div><h2 id="meName"></h2></div>
-        <span class="badge" id="meStatus"></span>
-      </div>
+        <div class="hello card">
+          <div class="hello-top"><h2 id="helloName"></h2><span class="badge" id="helloStatus"></span></div>
+          <p id="helloLine"></p>
+        </div>
 
-      <div class="sos-wrap">
-        <button id="sosBtn" class="sos" aria-label="Hold for 3 seconds to send SOS">
-          <span class="ring" id="sosRing"></span>
-          <span class="sos-inner"><b>SOS</b><small data-i18n="hold">Hold 3 seconds</small></span>
-        </button>
-      </div>
+        <div id="sosWrap" class="sos-wrap">
+          <button id="sosBtn" class="sos" aria-label="Hold for 3 seconds to send SOS">
+            <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" id="sosRing"></circle></svg>
+            <b>SOS</b><small data-i18n="hold">Hold for 3 seconds</small>
+          </button>
+        </div>
 
-      <div id="alertCard" class="card alert-card hidden"></div>
+        <div id="alertCard" class="hidden"></div>
+        <div id="queueCard" class="hidden"></div>
 
-      <div class="quick">
-        <a class="btn" href="tel:112"><b>112</b><span data-i18n="police">Emergency</span></a>
-        <a class="btn" href="tel:1363"><b>1363</b><span data-i18n="helpline">Tourist helpline</span></a>
-        <a class="btn" id="callContact" href="#"><b data-i18n="family">Family</b><span id="contactName">–</span></a>
-      </div>
+        <div class="quick">
+          <a class="btn" href="tel:112"><span class="ms police">local_police</span><b data-i18n="police112">Police 112</b></a>
+          <a class="btn" href="tel:1363"><span class="ms">support_agent</span><b data-i18n="helpline">Helpline 1363</b></a>
+          <a class="btn" id="callContact" href="#"><span class="ms family">family_restroom</span><b id="contactLabel">Family</b></a>
+        </div>
 
-      <div class="card">
-        <div class="card-head"><h3 data-i18n="band">Safety band</h3><span class="badge" id="bandState"></span></div>
-        <div class="band-row">
-          <div><div class="mono" id="bandId">–</div><div class="muted small" id="bandInfo"></div></div>
-          <div class="row">
-            <button class="btn-sm" id="btConnect" data-i18n="pair">Pair via Bluetooth</button>
-            <button class="btn-sm btn-ghost" id="bandEdit" data-i18n="edit">Edit</button>
+        <div class="card band-card">
+          <div class="card-head">
+            <div class="row"><span class="ms green">watch</span><h3 class="mono-h" id="bandId"></h3></div>
+            <span class="muted row small"><span class="ms small-ms">battery_5_bar</span><span id="bandBattery">–</span></span>
+          </div>
+          <p class="band-line"><span class="dot" id="bandDot"></span><span id="bandLine"></span></p>
+          <div class="toggles">
+            <label class="tog"><span data-i18n="shareLoc">Share my location with police</span><input type="checkbox" id="shareLoc" checked></label>
+            <label class="tog"><span data-i18n="fall">Detect falls</span><span class="tog-r"><button type="button" class="btn-sm hidden" id="fallTest" data-i18n="test">Test</button><input type="checkbox" id="fallDetect"></span></label>
           </div>
         </div>
-        <div class="toggles">
-          <label class="tog"><input type="checkbox" id="shareLoc" checked><span data-i18n="shareLoc">Share live location</span></label>
-          <label class="tog"><input type="checkbox" id="fallDetect"><span data-i18n="fall">Fall detection</span></label>
-          <label class="tog"><input type="checkbox" id="demoLoc"><span data-i18n="demoLoc">Demo: tap map to move</span></label>
+      </div>
+
+      <!-- Trip -->
+      <div class="view tab hidden" id="tab-trip">
+        <div class="card map-card">
+          <div class="card-head"><h3 data-i18n="nearby">Nearby</h3><span class="muted small mono" id="coords"></span></div>
+          <div id="map"></div>
+          <label class="tog demo"><span data-i18n="demoLoc">Demo: move by tapping the map</span><input type="checkbox" id="demoLoc"></label>
+        </div>
+        <div class="card">
+          <h3 class="sec-h" data-i18n="helpNear">Help near you</h3>
+          <div id="nearby"></div>
+        </div>
+        <div class="card">
+          <h3 class="sec-h" data-i18n="zonesNear">Risk zones</h3>
+          <div id="zonesNear"></div>
+        </div>
+        <div class="card">
+          <h3 class="sec-h" data-i18n="yourPlan">Your plan</h3>
+          <p class="muted small" id="tripDates"></p>
+          <div class="chips" id="itinerary"></div>
         </div>
       </div>
 
-      <div class="card map-card">
-        <div class="card-head"><h3 data-i18n="map">Around you</h3><span class="muted small mono" id="coords"></span></div>
-        <div id="map"></div>
-        <div id="nearby"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-head"><h3 data-i18n="myId">Digital tourist ID</h3><button class="btn-sm btn-ghost" id="logout" data-i18n="logout">Sign out</button></div>
-        <div class="idcard">
-          <div id="qr"></div>
-          <div class="kv" id="idInfo"></div>
+      <!-- ID -->
+      <div class="view tab hidden" id="tab-id">
+        <div class="card idcard">
+          <div class="card-head"><h3 data-i18n="myId">Tourist ID</h3><span class="badge b-neutral" id="idVerified">…</span></div>
+          <div class="id-body">
+            <div id="qr"></div>
+            <div class="id-info">
+              <b id="idName"></b>
+              <span class="mono" id="idTid"></span>
+              <div class="row"><span class="badge b-SOS" id="idBlood"></span><span class="muted small" id="idState"></span></div>
+            </div>
+          </div>
+          <div class="id-foot"><span id="idValid"></span><span class="mono small" id="idHash"></span></div>
+        </div>
+        <p class="muted small center" data-i18n="idShow">Show this to police, hotel staff or park rangers if they ask.</p>
+        <div class="card">
+          <h3 class="sec-h" data-i18n="emInfo">Emergency information</h3>
+          <div class="kv" id="idEmergency"></div>
         </div>
       </div>
 
-      <div class="card hidden" id="queueCard">
-        <div class="card-head"><h3 data-i18n="pending">Waiting to send</h3><span class="badge b-acknowledged" id="queueCount"></span></div>
-        <p class="muted small" data-i18n="pendingSub">These messages are stored on your phone and sent automatically when the internet is back. Your band also relays SOS over the mesh.</p>
-        <a class="btn wide" id="smsFallback" href="#" data-i18n="sms">Send by SMS instead</a>
+      <!-- Settings -->
+      <div class="view tab hidden" id="tab-settings">
+        <div class="card">
+          <h3 class="sec-h" data-i18n="language">Language</h3>
+          <div class="lang-seg wide" role="group"><button type="button" data-lang="en">English</button><button type="button" data-lang="hi">हिन्दी</button></div>
+        </div>
+        <div class="card">
+          <h3 class="sec-h" data-i18n="band">Safety band</h3>
+          <div class="set-row"><span><span class="muted small" data-i18n="bandNo">Band number</span><br><b class="mono" id="setBandId"></b></span><button class="btn-sm" id="bandEdit" data-i18n="change">Change</button></div>
+          <button class="wide" id="btConnect"><span class="ms">bluetooth</span><span data-i18n="pair">Connect band by Bluetooth</span></button>
+        </div>
+        <div class="card">
+          <h3 class="sec-h" data-i18n="about">About</h3>
+          <p class="muted small" data-i18n="aboutText">Suraksha works with your safety band. If you have no mobile network, the band passes your SOS to other bands nearby until it reaches a gateway with internet.</p>
+          <button class="wide btn-danger-outline" id="logout"><span class="ms">logout</span><span data-i18n="logout">Sign out of this phone</span></button>
+        </div>
       </div>
-      <p class="foot muted small">Suraksha Band · SIH prototype</p>
+
+      <nav class="bottom-nav" id="bottomNav">
+        <button data-go="home" class="active"><span class="ms">home</span><span data-i18n="navHome">Home</span></button>
+        <button data-go="trip"><span class="ms">map</span><span data-i18n="navTrip">Trip</span></button>
+        <button data-go="id"><span class="ms">badge</span><span data-i18n="navId">ID</span></button>
+        <button data-go="settings"><span class="ms">settings</span><span data-i18n="navSettings">Settings</span></button>
+      </nav>
     </section>
   </div>
 

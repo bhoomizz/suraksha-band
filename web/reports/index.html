@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suraksha Reports</title>
+  <link rel="icon" href="../shared/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="reports.css">
+</head>
+<body class="shell">
+  <header class="appbar">
+    <a class="brand" href="/"><img src="../shared/logo.svg" alt="">Suraksha</a>
+    <span class="vsep"></span>
+    <div class="place"><b>Reports</b><span>East Khasi Hills, Meghalaya</span></div>
+    <div class="grow"></div>
+    <button id="btnCsv"><span class="ms">download</span>Export CSV</button>
+    <button id="btnPrint" class="btn-primary"><span class="ms">print</span>Print report</button>
+  </header>
+
+  <nav class="rail">
+    <a href="/dashboard/"><span class="ms">map</span>Live map</a>
+    <a href="/dashboard/#tourists"><span class="ms">group</span>Tourists</a>
+    <a class="active" href="/reports/"><span class="ms">bar_chart</span>Reports</a>
+    <a href="/simulator/"><span class="ms">hub</span>Mesh</a>
+    <span class="rail-gap"></span>
+    <a href="/tourist/" target="_blank"><span class="ms">smartphone</span>Tourist app</a>
+  </nav>
+
+  <main class="shell-main reports">
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <h1>Daily report</h1>
+          <p class="muted" id="dayLabel"></p>
+        </div>
+        <div class="seg" id="range">
+          <button class="seg-btn active" data-days="1">Today</button>
+          <button class="seg-btn" data-days="7">Last 7 days</button>
+          <button class="seg-btn" data-days="30">Last 30 days</button>
+        </div>
+      </div>
+
+      <section class="tiles" id="tiles"></section>
+
+      <section class="grid2">
+        <div class="card chart-card">
+          <div class="chart-head"><h3>Alerts by type</h3><button class="btn-sm btn-ghost" data-table="byType">Show table</button></div>
+          <div id="byType"></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><h3>Alerts by hour of day</h3><button class="btn-sm btn-ghost" data-table="byHour">Show table</button></div>
+          <div id="byHour"></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><h3>Time to assign a unit, by day</h3><button class="btn-sm btn-ghost" data-table="byDay">Show table</button></div>
+          <div id="byDay"></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><h3>Busiest risk zones</h3></div>
+          <div id="zones"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="chart-head"><h3>All alerts in this period</h3><span class="muted small" id="alertTotal"></span></div>
+        <div class="table-wrap"><table class="data" id="alertTable"></table></div>
+      </section>
+    </div>
+  </main>
+  <div class="tip hidden" id="tip"></div>
+
+  <script src="../shared/common.js"></script>
+  <script src="reports.js"></script>
+</body>
+</html>

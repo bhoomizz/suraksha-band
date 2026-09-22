@@ -50,12 +50,14 @@ const Suraksha = (() => {
   }
 
   const ALERT = {
-    SOS: { label: "SOS", color: "#ef4444", text: "SOS button pressed" },
-    FALL: { label: "Fall", color: "#ec4899", text: "Fall detected" },
-    HEALTH: { label: "Health", color: "#a855f7", text: "Abnormal vitals" },
-    GEOFENCE: { label: "Zone", color: "#f59e0b", text: "Entered a high-risk zone" },
-    INACTIVITY: { label: "Silent", color: "#60a5fa", text: "No signal from band" },
+    SOS: { label: "SOS", color: "#BA1A1A", text: "Pressed SOS" },
+    FALL: { label: "Fall", color: "#8B3A62", text: "Band detected a fall" },
+    HEALTH: { label: "Heart rate", color: "#5B4A9E", text: "Unusual heart rate" },
+    GEOFENCE: { label: "Risk zone", color: "#B7791F", text: "Entered a risk zone" },
+    INACTIVITY: { label: "No signal", color: "#2B6CB0", text: "Band has gone quiet" },
   };
+  const STATUS = { open: "Open", acknowledged: "Unit assigned", resolved: "Closed", safe: "Safe", alert: "Alert" };
+  const via = (a) => a.source === "mesh" ? (a.hop_count ? `via ${a.hop_count} band${a.hop_count === 1 ? "" : "s"}` : "via mesh") : a.source === "app" ? "via app" : a.source === "sms" ? "via SMS" : "automatic";
 
   function toast(html, kind = "", ms = 5000) {
     let wrap = document.querySelector(".toast-wrap");
@@ -81,10 +83,11 @@ const Suraksha = (() => {
   }
 
   function tiles(map) {
-    return L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19, className: "dark-tiles", attribution: "&copy; OpenStreetMap contributors",
+    return L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19, className: "map-tiles",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
   }
 
-  return { api, live, esc, ago, clock, dist, duration, haversine, ALERT, toast, beep, tiles };
+  return { api, live, esc, ago, clock, dist, duration, haversine, ALERT, STATUS, via, toast, beep, tiles };
 })();

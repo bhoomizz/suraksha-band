@@ -4,69 +4,71 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Suraksha Control Room</title>
+  <link rel="icon" href="../shared/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="stylesheet" href="../shared/theme.css">
   <link rel="stylesheet" href="dashboard.css">
 </head>
-<body>
-  <header class="top">
-    <div class="brand">
-      <div class="logo">S</div>
-      <div>
-        <h1>Suraksha Control Room</h1>
-        <div class="muted small"><span id="liveDot" class="dot"></span> <span id="liveText">Connecting…</span></div>
-      </div>
-    </div>
-    <div class="stats" id="stats"></div>
-    <div class="top-actions">
-      <button id="btnAdvisory">Broadcast advisory</button>
-      <button id="btnZone">Add risk zone</button>
-      <button id="btnReset" class="btn-ghost" title="Clear all alerts (demo)">Reset demo</button>
-    </div>
+<body class="shell">
+  <header class="appbar">
+    <a class="brand" href="/"><img src="../shared/logo.svg" alt="">Suraksha</a>
+    <span class="vsep"></span>
+    <div class="place"><b>Control room</b><span>East Khasi Hills, Meghalaya</span></div>
+    <div class="grow"></div>
+    <span class="live"><span id="liveDot" class="dot"></span><span id="liveText">Connecting</span></span>
+    <button id="btnAdvisory"><span class="ms">campaign</span>Send notice</button>
+    <button id="btnZone" class="btn-primary"><span class="ms">add_location_alt</span>Add risk zone</button>
+    <button class="officer" id="officer" title="Change duty officer"><span class="avatar" id="officerInit">RL</span><span><b id="officerName">Insp. R. Lyngdoh</b><small>Duty officer</small></span></button>
   </header>
 
-  <main class="layout">
-    <aside class="side">
-      <div class="tabs">
-        <button class="tab active" data-tab="alerts">Alerts <span id="alertCount" class="count"></span></button>
-        <button class="tab" data-tab="tourists">Tourists <span id="touristCount" class="count"></span></button>
-      </div>
-      <div class="filters" id="alertFilters">
-        <button class="chip active" data-f="active">Active</button>
-        <button class="chip" data-f="resolved">Resolved</button>
-        <button class="chip" data-f="all">All</button>
-      </div>
-      <div class="filters hidden" id="touristFilters">
-        <input id="touristSearch" placeholder="Search name, band or ID">
-      </div>
-      <div class="list" id="list"></div>
-    </aside>
+  <nav class="rail">
+    <a class="active" href="/dashboard/" data-tab-link="alerts"><span class="ms">map</span>Live map</a>
+    <a href="/dashboard/#tourists" data-tab-link="tourists"><span class="ms">group</span>Tourists</a>
+    <a href="/reports/"><span class="ms">bar_chart</span>Reports</a>
+    <a href="/simulator/"><span class="ms">hub</span>Mesh</a>
+    <span class="rail-gap"></span>
+    <a href="/tourist/" target="_blank"><span class="ms">smartphone</span>Tourist app</a>
+  </nav>
 
-    <section class="map-wrap">
-      <div id="map"></div>
-      <div class="legend">
-        <span><i style="background:#22c55e"></i>Safe tourist</span>
-        <span><i style="background:#ef4444"></i>In alert</span>
-        <span><i style="background:#3b82f6;border-radius:3px"></i>Police</span>
-        <span><i style="background:#ec4899;border-radius:3px"></i>Hospital</span>
-        <span><i style="background:#2dd4bf;border-radius:2px;transform:rotate(45deg)"></i>Mesh gateway</span>
-      </div>
-      <div class="zone-hint hidden" id="zoneHint">Click on the map to place the new risk zone. <button class="btn-sm" id="zoneCancel">Cancel</button></div>
-    </section>
-
-    <aside class="detail" id="detail">
-      <div class="empty">
-        <h3>No alert selected</h3>
-        <p class="muted">Pick an alert or a tourist from the list, or click a marker on the map.</p>
-        <div class="howto">
-          <h4>Alert channels</h4>
-          <p><b>App</b>: SOS sent over the internet from the tourist's phone.</p>
-          <p><b>Mesh</b>: band-to-band LoRa relay with no internet, uploaded by a gateway.</p>
-          <p><b>SMS</b>: GSM fallback message parsed by the server.</p>
-          <p><b>System</b>: automatic geofence and inactivity detection.</p>
+  <main class="shell-main dash">
+    <div class="metrics" id="stats"></div>
+    <div class="cols">
+      <aside class="side">
+        <div class="seg">
+          <button class="seg-btn active" data-tab="alerts">Alerts</button>
+          <button class="seg-btn" data-tab="tourists">Tourists</button>
         </div>
-      </div>
-    </aside>
+        <div class="filters" id="alertFilters">
+          <button class="chip active" data-f="active">Open <span id="openCount"></span></button>
+          <button class="chip" data-f="resolved">Closed</button>
+          <button class="chip" data-f="all">All</button>
+        </div>
+        <div class="filters hidden" id="touristFilters">
+          <div class="search"><span class="ms">search</span><input id="touristSearch" placeholder="Search by name, band or tourist ID"></div>
+        </div>
+        <div class="list" id="list"></div>
+      </aside>
+
+      <section class="map-wrap">
+        <div id="map"></div>
+        <div class="legend">
+          <div class="legend-title">On the map</div>
+          <span><i class="lg-alert"></i>Open alert</span>
+          <span><i class="lg-tourist"></i>Tourist</span>
+          <span><i class="lg-police">P</i>Police</span>
+          <span><i class="lg-hospital">H</i>Hospital</span>
+          <span><i class="lg-gw"></i>Mesh gateway</span>
+          <span><i class="lg-zone"></i>Risk zone</span>
+          <span><i class="lg-route"></i>SOS route</span>
+        </div>
+        <div class="zone-hint hidden" id="zoneHint"><span class="ms">touch_app</span>Click on the map where the risk zone should be. <button class="btn-sm" id="zoneCancel">Cancel</button></div>
+      </section>
+
+      <aside class="detail" id="detail"></aside>
+    </div>
   </main>
 
   <div class="modal-back" id="modal"><div class="modal" id="modalBody"></div></div>

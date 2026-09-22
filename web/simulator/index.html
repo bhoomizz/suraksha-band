@@ -3,66 +3,88 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mesh Network Simulator</title>
+  <title>Suraksha Mesh Simulator</title>
+  <link rel="icon" href="../shared/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0..1,0&display=block">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="stylesheet" href="../shared/theme.css">
   <link rel="stylesheet" href="sim.css">
 </head>
-<body>
-  <main class="sim">
-    <aside class="panel">
-      <div class="brand"><div class="logo">S</div><div><h1>LoRa Mesh Simulator</h1><div class="muted small">Band-to-band SOS relay with no internet</div></div></div>
+<body class="shell">
+  <header class="appbar">
+    <a class="brand" href="/"><img src="../shared/logo.svg" alt="">Suraksha</a>
+    <span class="vsep"></span>
+    <div class="place"><b>Mesh simulator</b><span>How an SOS reaches the police with no mobile network</span></div>
+    <div class="grow"></div>
+    <button id="resetDemo" class="btn-ghost" title="Clear all alerts and mark everyone safe"><span class="ms">restart_alt</span>Reset demo</button>
+    <a class="btn" href="/dashboard/" target="_blank"><span class="ms">open_in_new</span>Open control room</a>
+  </header>
 
+  <nav class="rail">
+    <a href="/dashboard/"><span class="ms">map</span>Live map</a>
+    <a href="/dashboard/#tourists"><span class="ms">group</span>Tourists</a>
+    <a href="/reports/"><span class="ms">bar_chart</span>Reports</a>
+    <a class="active" href="/simulator/"><span class="ms">hub</span>Mesh</a>
+    <span class="rail-gap"></span>
+    <a href="/tourist/" target="_blank"><span class="ms">smartphone</span>Tourist app</a>
+  </nav>
+
+  <main class="shell-main sim">
+    <aside class="panel">
       <section>
-        <h4>Scenarios</h4>
-        <div class="stack">
-          <button class="btn-primary" id="scLost">1. Tourist lost at Elephant Falls</button>
-          <button id="scSos">2. Send SOS from that band</button>
-          <button id="scBreak">3. Break a relay, then send SOS again</button>
-          <button id="scGwDown">4. Gateway loses internet (store and forward)</button>
+        <span class="label">Demo steps</span>
+        <div class="steps" id="steps">
+          <button data-step="1"><span class="num">1</span><span><b>Tourist gets lost at Elephant Falls</b><small>Kabir walks out of mobile coverage near the falls.</small></span></button>
+          <button data-step="2"><span class="num">2</span><span><b>Tourist presses SOS</b><small>The band sends it to the nearest bands over radio.</small></span></button>
+          <button data-step="3"><span class="num">3</span><span><b>One band's battery dies</b><small>The message finds another way through.</small></span></button>
+          <button data-step="4"><span class="num">4</span><span><b>The gateway loses internet</b><small>It keeps the message and sends it when it's back.</small></span></button>
         </div>
       </section>
 
       <section>
-        <h4>Radio</h4>
-        <label>LoRa range <b id="rangeV"></b></label>
+        <span class="label">Radio settings</span>
+        <label>Radio range <b id="rangeV"></b></label>
         <input type="range" id="range" min="500" max="4000" step="100" value="1800">
-        <label>Max hops (TTL) <b id="ttlV"></b></label>
+        <label>Maximum hops <b id="ttlV"></b></label>
         <input type="range" id="ttl" min="1" max="12" value="8">
         <label>Delay per hop <b id="delayV"></b></label>
         <input type="range" id="delay" min="150" max="1500" step="50" value="600">
         <div class="checks">
-          <label class="tog"><input type="checkbox" id="showRange"> Show range circles</label>
-          <label class="tog"><input type="checkbox" id="autoHb"> Auto heartbeat every 20 s</label>
+          <label class="tog"><input type="checkbox" id="showRange"> Show radio range</label>
+          <label class="tog"><input type="checkbox" id="autoHb"> Send location every 20 s</label>
         </div>
       </section>
 
       <section>
-        <h4>Network</h4>
+        <span class="label">Network</span>
         <div class="stack">
-          <button id="hbAll">Heartbeat from all tourist bands</button>
-          <button id="addRelay">Add relay band (click map)</button>
-          <button class="btn-ghost" id="resetLayout">Reset layout</button>
+          <button id="hbAll"><span class="ms">my_location</span>Send location from all tourists</button>
+          <button id="addRelay"><span class="ms">add_circle</span>Add a band (click the map)</button>
+          <button class="btn-ghost" id="resetLayout"><span class="ms">undo</span>Reset layout</button>
         </div>
         <div class="counters" id="counters"></div>
       </section>
-
-      <p class="muted small">Click any node for actions. Drag nodes to move them. Tourist bands are linked to registered tourists; relay bands are other tourists' bands and fixed repeaters. Open the <a href="/dashboard/" target="_blank">control room</a> next to this to watch alerts arrive.</p>
+      <p class="muted small">Click any band for actions and drag it to move it. Green bands belong to registered tourists. Grey bands are other people's bands and fixed repeaters.</p>
     </aside>
 
     <section class="map-wrap">
       <div id="map"></div>
       <div class="legend">
+        <div class="legend-title">On the map</div>
         <span><i class="n-band"></i>Tourist band</span>
-        <span><i class="n-relay"></i>Relay band</span>
-        <span><i class="n-gw"></i>Gateway (internet)</span>
-        <span><i class="n-off"></i>Powered off</span>
+        <span><i class="n-sos"></i>Band that sent SOS</span>
+        <span><i class="n-relay"></i>Other band</span>
+        <span><i class="n-gw"></i>Gateway with internet</span>
+        <span><i class="n-off"></i>Switched off</span>
+        <span><i class="n-link"></i>Message passing</span>
       </div>
-      <div class="hint hidden" id="hint">Click the map to drop a relay band. <button class="btn-sm" id="hintCancel">Done</button></div>
+      <div class="hint hidden" id="hint"><span class="ms">touch_app</span>Click the map to drop a band. <button class="btn-sm" id="hintCancel">Done</button></div>
     </section>
 
     <aside class="logs">
-      <div class="logs-head"><h4>Packet log</h4><button class="btn-sm btn-ghost" id="clearLog">Clear</button></div>
+      <div class="logs-head"><h3>Event log</h3><button class="btn-sm btn-ghost" id="clearLog">Clear</button></div>
       <div id="log"></div>
     </aside>
   </main>

@@ -1,0 +1,64 @@
+.reports { overflow-y: auto; }
+.page { max-width: 1200px; margin: 0 auto; padding: 22px 24px 40px; display: grid; gap: 16px; }
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.page-head h1 { font-size: 26px; color: var(--primary-ink); }
+.page-head p { margin: 2px 0 0; }
+.seg { display: flex; background: var(--surface); border-radius: var(--r); padding: 3px; }
+.seg-btn { border: 0; background: transparent; padding: 6px 12px; color: var(--text-2); border-radius: 6px; }
+.seg-btn:hover { background: var(--surface-high); }
+.seg-btn.active { background: var(--card); color: var(--primary-ink); box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; }
+.tile .k { font: 500 13px var(--head); color: var(--text-2); }
+.tile .v { font: 700 28px var(--head); color: var(--text); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.tile .s { font-size: 13px; color: var(--muted); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chart-card { min-height: 260px; }
+.chart-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
+.chart-head h3 { font-size: 16px; }
+.no-data { color: var(--muted); padding: 40px 0; text-align: center; font-size: 14px; }
+
+/* Horizontal bars */
+.hbars { display: grid; gap: 10px; }
+.hbar { display: grid; grid-template-columns: 110px 1fr 36px; align-items: center; gap: 10px; font-size: 14px; }
+.hbar .track { height: 14px; background: var(--surface); border-radius: 4px; position: relative; }
+.hbar .fill { height: 100%; background: var(--primary); border-radius: 0 4px 4px 0; min-width: 3px; }
+.hbar .n { font: 600 14px var(--head); text-align: right; font-variant-numeric: tabular-nums; }
+.hbar:hover .fill { background: var(--primary-ink); }
+
+/* Column charts */
+.cols-chart { display: grid; grid-template-rows: 1fr auto; height: 200px; }
+.cols-plot { display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--line-strong); position: relative; margin-left: 40px; }
+.cols-plot .gridline { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--line); font: 11px var(--mono); color: var(--muted); }
+.cols-plot .gridline span { position: absolute; right: 100%; top: -8px; padding-right: 6px; white-space: nowrap; }
+.col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; cursor: default; position: relative; z-index: 1; }
+.col .bar { width: 70%; max-width: 34px; background: var(--primary); border-radius: 4px 4px 0 0; min-height: 0; }
+.col .bar.zero { background: transparent; }
+.col:hover .bar { background: var(--primary-ink); }
+.col .peak { font: 600 12px var(--head); color: var(--text); margin-bottom: 3px; }
+.cols-x { display: flex; gap: 2px; font: 11px var(--mono); color: var(--muted); padding-top: 5px; margin-left: 40px; }
+.cols-x span { flex: 1; text-align: center; white-space: nowrap; }
+
+.ztable, .data { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ztable th, .ztable td, .data th, .data td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+.ztable th, .data th { font: 600 12px var(--head); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.ztable td.n, .data td.n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.rank { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--surface); font: 600 12px var(--head); margin-right: 8px; }
+.table-wrap { overflow-x: auto; max-height: 420px; overflow-y: auto; }
+.data td.mono { white-space: nowrap; }
+
+.tip { position: fixed; z-index: 3000; pointer-events: none; background: var(--text); color: #fff; font-size: 13px; padding: 6px 9px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); }
+
+@media (max-width: 900px) {
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .grid2 { grid-template-columns: 1fr; }
+  .page { padding: 16px; }
+}
+@media print {
+  .shell { display: block; height: auto; overflow: visible; }
+  .appbar, .rail, .seg, .chart-head button { display: none !important; }
+  .reports { overflow: visible; }
+  .card, .tile { break-inside: avoid; }
+}

@@ -7,9 +7,11 @@ A wearable safety band for tourists with an SOS button, fall detection, GPS and 
 | Folder | What it is |
 |---|---|
 | `backend/` | Python FastAPI server: REST API, WebSocket live feed, SQLite database, geofencing, inactivity watcher, SMS parser, hash-chained digital ID |
-| `web/dashboard/` | Police / tourism **control room**: live map, alert queue, dispatch and resolve, mesh path, nearest police and hospital, risk zones, advisories |
-| `web/tourist/` | **Tourist app** (installable PWA): registration and digital ID with QR, 3-second SOS hold, offline queue, SMS fallback, geofence warnings, fall detection, Bluetooth band pairing, English and Hindi |
+| `web/dashboard/` | Police / tourism **control room**: live map, alert queue, case file, assign unit and close case, SOS route, nearest police and hospital, risk zones, notices to tourists |
+| `web/reports/` | **Daily report**: alerts by type and by hour, time to assign a unit, busiest risk zones, full alert table, CSV export and print |
+| `web/tourist/` | **Tourist app** (installable PWA): 3-step sign-up, Home / Trip / ID / Settings tabs, 3-second SOS hold, live "help is on the way" tracking, offline queue with SMS fallback, risk-zone warnings, fall detection, Bluetooth band pairing, English and Hindi |
 | `web/simulator/` | **Mesh simulator**: demo band-to-band relay without any hardware |
+| `web/shared/` | Design tokens (`theme.css`), logo and shared helpers used by every page |
 | `firmware/band/` | ESP32 band sketch: LoRa mesh relay, SOS button, GPS, fall detection, BLE to phone |
 | `firmware/gateway/` | ESP32 gateway sketch: LoRa to server over Wi-Fi, store and forward, SIM800L SMS fallback |
 
@@ -30,21 +32,23 @@ Then open:
 - http://localhost:8000/dashboard/ for the control room
 - http://localhost:8000/tourist/ for the tourist app
 - http://localhost:8000/simulator/ for the mesh simulator
+- http://localhost:8000/reports/ for the daily report
 - http://localhost:8000/docs for the API docs (Swagger)
 
-Demo data (tourists, zones, police stations) is seeded around Shillong on first run. To start fresh, stop the server and delete `backend/suraksha.db`. The coordinates and phone numbers are **sample values** and must be replaced with verified data.
+Demo data is seeded around Shillong on first run: six Indian tourists from Delhi, Kerala, West Bengal, Punjab, Tamil Nadu and Maharashtra, five risk zones (Elephant Falls, Umiam Lake, Shillong Peak, a forest belt and Laitlum Canyon), and local police stations and hospitals. To start fresh, stop the server and delete `backend/suraksha.db`. The coordinates and phone numbers are **sample values** and must be replaced with verified data.
 
 ## Demo script for judges (about 5 minutes)
 
 1. Open the **dashboard** and the **simulator** side by side.
-2. In the simulator, click **1. Tourist lost at Elephant Falls**. The band's heartbeat hops through the mesh, and the dashboard raises a *Zone* alert because Elephant Falls is a high-risk zone.
-3. Click **2. Send SOS**. Watch the packet hop band to band until it reaches the gateway. The dashboard beeps, shows the SOS with the full **mesh path**, tourist medical info, and the nearest police and hospital.
-4. Click **3. Break a relay**. One band "dies" and the SOS takes another path. That is self-healing.
-5. Click **4. Gateway loses internet**. The gateway stores the packet and forwards it when the connection returns.
-6. In the dashboard, **Acknowledge and dispatch** ("PCR Van 12"). Open the **tourist app** in a phone-sized window to see "Help is on the way" update live.
+2. In the simulator, click **1. Tourist gets lost at Elephant Falls**. Kabir Singh's band sends its location through the mesh, and the control room raises a *Risk zone* alert because Elephant Falls is a high-risk zone.
+3. Click **2. Tourist presses SOS**. Watch the message hop band to band until it reaches the gateway. The control room beeps and opens the case file: the route the SOS took, blood group, medical notes (diabetic), emergency contact, and the nearest police station and hospital.
+4. Click **3. One band's battery dies**. The SOS finds another way through.
+5. Click **4. The gateway loses internet**. The gateway keeps the message and sends it when the connection returns.
+6. In the control room, type "PCR Van 12" and click **Assign unit**. Open the **tourist app** in a phone-sized window, choose "I already have a tourist ID" and enter Kabir's ID (it's in the control room's Tourists tab), and "Help is on the way" updates live.
 7. In the tourist app, turn the network off (DevTools → Network → Offline) and hold SOS. It is queued, an **SMS fallback** is offered, and the SOS sends automatically when you go back online.
-8. **Broadcast advisory** from the dashboard. It appears instantly on the tourist app.
-9. Show the tamper-evident ID check at `/api/ledger/verify`.
+8. Click **Send notice** in the control room. It appears at the top of the tourist app straight away.
+9. Open **Reports** to show the day's alerts, response times and busiest risk zones.
+10. The tourist ID tab shows **Verified**, which checks the tamper-evident ID chain (`/api/ledger/verify`).
 
 ## Channels an SOS can take
 
