@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mesh Network Simulator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="sim.css">
+</head>
+<body>
+  <main class="sim">
+    <aside class="panel">
+      <div class="brand"><div class="logo">S</div><div><h1>LoRa Mesh Simulator</h1><div class="muted small">Band-to-band SOS relay with no internet</div></div></div>
+
+      <section>
+        <h4>Scenarios</h4>
+        <div class="stack">
+          <button class="btn-primary" id="scLost">1. Tourist lost at Elephant Falls</button>
+          <button id="scSos">2. Send SOS from that band</button>
+          <button id="scBreak">3. Break a relay, then send SOS again</button>
+          <button id="scGwDown">4. Gateway loses internet (store and forward)</button>
+        </div>
+      </section>
+
+      <section>
+        <h4>Radio</h4>
+        <label>LoRa range <b id="rangeV"></b></label>
+        <input type="range" id="range" min="500" max="4000" step="100" value="1800">
+        <label>Max hops (TTL) <b id="ttlV"></b></label>
+        <input type="range" id="ttl" min="1" max="12" value="8">
+        <label>Delay per hop <b id="delayV"></b></label>
+        <input type="range" id="delay" min="150" max="1500" step="50" value="600">
+        <div class="checks">
+          <label class="tog"><input type="checkbox" id="showRange"> Show range circles</label>
+          <label class="tog"><input type="checkbox" id="autoHb"> Auto heartbeat every 20 s</label>
+        </div>
+      </section>
+
+      <section>
+        <h4>Network</h4>
+        <div class="stack">
+          <button id="hbAll">Heartbeat from all tourist bands</button>
+          <button id="addRelay">Add relay band (click map)</button>
+          <button class="btn-ghost" id="resetLayout">Reset layout</button>
+        </div>
+        <div class="counters" id="counters"></div>
+      </section>
+
+      <p class="muted small">Click any node for actions. Drag nodes to move them. Tourist bands are linked to registered tourists; relay bands are other tourists' bands and fixed repeaters. Open the <a href="/dashboard/" target="_blank">control room</a> next to this to watch alerts arrive.</p>
+    </aside>
+
+    <section class="map-wrap">
+      <div id="map"></div>
+      <div class="legend">
+        <span><i class="n-band"></i>Tourist band</span>
+        <span><i class="n-relay"></i>Relay band</span>
+        <span><i class="n-gw"></i>Gateway (internet)</span>
+        <span><i class="n-off"></i>Powered off</span>
+      </div>
+      <div class="hint hidden" id="hint">Click the map to drop a relay band. <button class="btn-sm" id="hintCancel">Done</button></div>
+    </section>
+
+    <aside class="logs">
+      <div class="logs-head"><h4>Packet log</h4><button class="btn-sm btn-ghost" id="clearLog">Clear</button></div>
+      <div id="log"></div>
+    </aside>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="../shared/common.js"></script>
+  <script src="sim.js"></script>
+</body>
+</html>

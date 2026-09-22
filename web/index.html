@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suraksha Band</title>
+  <link rel="icon" href="tourist/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shared/theme.css">
+  <style>
+    body { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; }
+    .wrap { max-width: 980px; width: 100%; }
+    .hero { text-align: center; margin-bottom: 36px; }
+    .hero img { width: 72px; height: 72px; }
+    .hero h1 { font-size: clamp(28px, 5vw, 44px); margin: 14px 0 8px; letter-spacing: -.02em; }
+    .hero p { color: var(--muted); font-size: 16px; max-width: 640px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 8px; transition: border-color .15s, transform .15s; }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card h2 { font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+    .flow { margin-top: 28px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+    .flow h3 { font-size: 14px; margin-bottom: 10px; }
+    .steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; }
+    .steps span { background: var(--panel-2); border: 1px solid var(--line); padding: 6px 10px; border-radius: 8px; }
+    .steps b { color: var(--muted); }
+    .links { margin-top: 18px; text-align: center; font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <img src="tourist/icon.svg" alt="">
+      <h1>Suraksha Band</h1>
+      <p>A smart safety band for tourists. It has an SOS button, works without internet over a LoRa mesh between bands, and alerts the police control room in real time.</p>
+    </div>
+    <div class="grid">
+      <a class="card" href="dashboard/"><span class="tag">Authorities</span><h2>Control Room Dashboard</h2><p>Live map of tourists and SOS alerts, mesh path, nearest police and hospital, dispatch and resolve, risk zones and advisories.</p></a>
+      <a class="card" href="tourist/"><span class="tag">Tourists</span><h2>Tourist App</h2><p>Mobile PWA with a digital ID, SOS hold button, offline queue with SMS fallback, geofence warnings, fall detection and Bluetooth band pairing.</p></a>
+      <a class="card" href="simulator/"><span class="tag">Demo</span><h2>Mesh Simulator</h2><p>Simulates bands relaying an SOS hop by hop with no internet until it reaches a gateway. Use it to demo without hardware.</p></a>
+    </div>
+    <div class="flow">
+      <h3>How an SOS travels</h3>
+      <div class="steps">
+        <span>Band SOS button</span><b>→</b><span>LoRa mesh (band to band)</span><b>→</b><span>Gateway (GSM / Wi-Fi)</span><b>→</b><span>Server</span><b>→</b><span>Control room + tourist app</span>
+      </div>
+      <div class="steps" style="margin-top:8px">
+        <span>Band</span><b>→</b><span>Bluetooth</span><b>→</b><span>Phone app</span><b>→</b><span>Internet, or SMS when offline</span>
+      </div>
+    </div>
+    <p class="links"><a href="/docs">API docs (Swagger)</a> · <a href="/api/ledger/verify">Verify digital-ID ledger</a></p>
+  </div>
+</body>
+</html>

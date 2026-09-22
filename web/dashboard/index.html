@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suraksha Control Room</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="logo">S</div>
+      <div>
+        <h1>Suraksha Control Room</h1>
+        <div class="muted small"><span id="liveDot" class="dot"></span> <span id="liveText">Connecting…</span></div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="top-actions">
+      <button id="btnAdvisory">Broadcast advisory</button>
+      <button id="btnZone">Add risk zone</button>
+      <button id="btnReset" class="btn-ghost" title="Clear all alerts (demo)">Reset demo</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="side">
+      <div class="tabs">
+        <button class="tab active" data-tab="alerts">Alerts <span id="alertCount" class="count"></span></button>
+        <button class="tab" data-tab="tourists">Tourists <span id="touristCount" class="count"></span></button>
+      </div>
+      <div class="filters" id="alertFilters">
+        <button class="chip active" data-f="active">Active</button>
+        <button class="chip" data-f="resolved">Resolved</button>
+        <button class="chip" data-f="all">All</button>
+      </div>
+      <div class="filters hidden" id="touristFilters">
+        <input id="touristSearch" placeholder="Search name, band or ID">
+      </div>
+      <div class="list" id="list"></div>
+    </aside>
+
+    <section class="map-wrap">
+      <div id="map"></div>
+      <div class="legend">
+        <span><i style="background:#22c55e"></i>Safe tourist</span>
+        <span><i style="background:#ef4444"></i>In alert</span>
+        <span><i style="background:#3b82f6;border-radius:3px"></i>Police</span>
+        <span><i style="background:#ec4899;border-radius:3px"></i>Hospital</span>
+        <span><i style="background:#2dd4bf;border-radius:2px;transform:rotate(45deg)"></i>Mesh gateway</span>
+      </div>
+      <div class="zone-hint hidden" id="zoneHint">Click on the map to place the new risk zone. <button class="btn-sm" id="zoneCancel">Cancel</button></div>
+    </section>
+
+    <aside class="detail" id="detail">
+      <div class="empty">
+        <h3>No alert selected</h3>
+        <p class="muted">Pick an alert or a tourist from the list, or click a marker on the map.</p>
+        <div class="howto">
+          <h4>Alert channels</h4>
+          <p><b>App</b>: SOS sent over the internet from the tourist's phone.</p>
+          <p><b>Mesh</b>: band-to-band LoRa relay with no internet, uploaded by a gateway.</p>
+          <p><b>SMS</b>: GSM fallback message parsed by the server.</p>
+          <p><b>System</b>: automatic geofence and inactivity detection.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="modal-back" id="modal"><div class="modal" id="modalBody"></div></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="../shared/common.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

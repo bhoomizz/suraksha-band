@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1017">
+  <title>Suraksha Tourist</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app">
+    <header class="bar">
+      <div class="brand"><div class="logo">S</div><span data-i18n="app">Suraksha</span></div>
+      <div class="bar-right">
+        <span class="net" id="net"><span class="dot"></span><span id="netText"></span></span>
+        <button class="btn-sm btn-ghost" id="langBtn">हिं</button>
+      </div>
+    </header>
+
+    <!-- Registration -->
+    <section id="viewRegister" class="view hidden">
+      <div class="card">
+        <h2 data-i18n="regTitle">Register your trip</h2>
+        <p class="muted" data-i18n="regSub">You get a digital tourist ID linked to your safety band. Police can only see this information during an emergency.</p>
+        <form id="regForm">
+          <label data-i18n="fName">Full name</label><input name="name" required autocomplete="name">
+          <div class="grid2">
+            <div><label data-i18n="fPhone">Phone</label><input name="phone" type="tel" autocomplete="tel"></div>
+            <div><label data-i18n="fNat">Nationality</label><input name="nationality" value="Indian"></div>
+          </div>
+          <label data-i18n="fDoc">Aadhaar / Passport no.</label><input name="id_doc" placeholder="Only the last 4 digits are stored">
+          <div class="grid2">
+            <div><label data-i18n="fBlood">Blood group</label>
+              <select name="blood_group"><option></option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+            <div><label data-i18n="fBand">Band ID</label><input name="band_id" placeholder="BAND-1234"></div>
+          </div>
+          <label data-i18n="fMed">Medical notes</label><input name="medical_notes" placeholder="Allergies, conditions">
+          <div class="grid2">
+            <div><label data-i18n="fEName">Emergency contact</label><input name="emergency_name"></div>
+            <div><label data-i18n="fEPhone">Contact phone</label><input name="emergency_phone" type="tel"></div>
+          </div>
+          <div class="grid2">
+            <div><label data-i18n="fStart">Trip start</label><input name="trip_start" type="date"></div>
+            <div><label data-i18n="fEnd">Trip end</label><input name="trip_end" type="date"></div>
+          </div>
+          <label data-i18n="fItin">Places you plan to visit</label><input name="itinerary" placeholder="Elephant Falls, Umiam Lake">
+          <button class="btn-primary wide" type="submit" data-i18n="regBtn">Create my digital ID</button>
+        </form>
+        <details class="login">
+          <summary data-i18n="haveId">Already registered?</summary>
+          <div class="row"><input id="loginId" placeholder="TID-XXXXXX"><button id="loginBtn" data-i18n="open">Open</button></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Home -->
+    <section id="viewHome" class="view hidden">
+      <div id="advisory" class="banner hidden"></div>
+      <div id="zoneBanner" class="banner warn hidden"></div>
+
+      <div class="hello">
+        <div><div class="muted small" data-i18n="hello">Stay safe,</div><h2 id="meName"></h2></div>
+        <span class="badge" id="meStatus"></span>
+      </div>
+
+      <div class="sos-wrap">
+        <button id="sosBtn" class="sos" aria-label="Hold for 3 seconds to send SOS">
+          <span class="ring" id="sosRing"></span>
+          <span class="sos-inner"><b>SOS</b><small data-i18n="hold">Hold 3 seconds</small></span>
+        </button>
+      </div>
+
+      <div id="alertCard" class="card alert-card hidden"></div>
+
+      <div class="quick">
+        <a class="btn" href="tel:112"><b>112</b><span data-i18n="police">Emergency</span></a>
+        <a class="btn" href="tel:1363"><b>1363</b><span data-i18n="helpline">Tourist helpline</span></a>
+        <a class="btn" id="callContact" href="#"><b data-i18n="family">Family</b><span id="contactName">–</span></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 data-i18n="band">Safety band</h3><span class="badge" id="bandState"></span></div>
+        <div class="band-row">
+          <div><div class="mono" id="bandId">–</div><div class="muted small" id="bandInfo"></div></div>
+          <div class="row">
+            <button class="btn-sm" id="btConnect" data-i18n="pair">Pair via Bluetooth</button>
+            <button class="btn-sm btn-ghost" id="bandEdit" data-i18n="edit">Edit</button>
+          </div>
+        </div>
+        <div class="toggles">
+          <label class="tog"><input type="checkbox" id="shareLoc" checked><span data-i18n="shareLoc">Share live location</span></label>
+          <label class="tog"><input type="checkbox" id="fallDetect"><span data-i18n="fall">Fall detection</span></label>
+          <label class="tog"><input type="checkbox" id="demoLoc"><span data-i18n="demoLoc">Demo: tap map to move</span></label>
+        </div>
+      </div>
+
+      <div class="card map-card">
+        <div class="card-head"><h3 data-i18n="map">Around you</h3><span class="muted small mono" id="coords"></span></div>
+        <div id="map"></div>
+        <div id="nearby"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 data-i18n="myId">Digital tourist ID</h3><button class="btn-sm btn-ghost" id="logout" data-i18n="logout">Sign out</button></div>
+        <div class="idcard">
+          <div id="qr"></div>
+          <div class="kv" id="idInfo"></div>
+        </div>
+      </div>
+
+      <div class="card hidden" id="queueCard">
+        <div class="card-head"><h3 data-i18n="pending">Waiting to send</h3><span class="badge b-acknowledged" id="queueCount"></span></div>
+        <p class="muted small" data-i18n="pendingSub">These messages are stored on your phone and sent automatically when the internet is back. Your band also relays SOS over the mesh.</p>
+        <a class="btn wide" id="smsFallback" href="#" data-i18n="sms">Send by SMS instead</a>
+      </div>
+      <p class="foot muted small">Suraksha Band · SIH prototype</p>
+    </section>
+  </div>
+
+  <div class="modal-back" id="modal"><div class="modal" id="modalBody"></div></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="../shared/common.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
